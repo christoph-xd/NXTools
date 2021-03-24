@@ -1,6 +1,6 @@
 ﻿# NX 1911
 # Journal created by brandauc on Wed Apr 22 13:07:48 2020 Mitteleuropäische Sommerzeit
-
+#
 #
 import math
 import NXOpen
