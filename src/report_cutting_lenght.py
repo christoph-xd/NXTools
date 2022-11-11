@@ -1,35 +1,21 @@
-import math
+import json
+from pathlib import Path
 import NXOpen
-import NXOpen.Gateway
 import NXOpen.CAM
-import NXOpen.UF
-from utils import Checks, Getters
-from utils import lw
+import NXOpen.Gateway
+
+from utils import Checks, Getters, lw
 
 
 class ReportCuttingLength:
     def __init__(self, isDebug: bool) -> None:
         self.theSession = NXOpen.Session.GetSession()
-        self.theUfSession = NXOpen.UF.UFSession.GetUFSession()
         self.theUI = NXOpen.UI.GetUI()
         self.isDebug = isDebug
 
-        if isDebug:
+        if self.isDebug:
             self.theUI.NXMessageBox.Show("Debug Mode", NXOpen.NXMessageBox.DialogType.Information, str(
                 "The Debug Mode is switched one!"))
-
-    # def lw(self, output: str):
-    #     """
-    #     Write a line in the NX Listing Window
-    #     Args:
-    #         output   : The Output which will shown
-    #     """
-    #     if not self.theSession.ListingWindow.IsOpen:
-    #         self.theSession.ListingWindow.Open()
-    #     else:
-    #         pass
-
-    #     self.theSession.ListingWindow.WriteFullline(str(output))
 
     def main(self):
         workPart = self.theSession.Parts.Work
@@ -75,6 +61,13 @@ class ReportCuttingLength:
 
 
 if __name__ == '__main__':
-    isDebug = True
-    report = ReportCuttingLength(isDebug)
-    report.main()
+    isDebug = False
+    config_file = Path(__file__).parent
+    with open(f'{config_file}/config.json', 'r') as f:
+        config = json.load(f)
+        report_json = config['report_cutting_length']
+        lic = config['license']
+    if Checks.check_nx_version(int(report_json['version_max']), int(report_json['version_min'])):
+        if Checks.check_lic(lic, isDebug=False):
+            report = ReportCuttingLength(isDebug)
+            report.main()
