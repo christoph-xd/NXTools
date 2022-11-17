@@ -80,6 +80,44 @@ class Getters:
         return operation_info
 
 
+class UI:
+    theUfSession = NXOpen.UF.UFSession.GetUFSession()
+    theUI = NXOpen.UI.GetUI()
+
+    @classmethod
+    def ask_yes_no(cls, title: str, message: str) -> int:
+        """
+        Display System Information
+        Args:
+            title   : The Title to Display
+            message : The Message to Display
+            Result  : The Response
+        """
+        response = 0
+
+        try:
+            buttons = cls.theUfSession.Ui.MessageButtons()
+            buttons.Button1 = True
+            buttons.Button2 = False
+            buttons.Button3 = True
+            buttons.Label1 = "Yes"
+            buttons.Label2 = None
+            buttons.Label3 = "No"
+            buttons.Response1 = 1
+            buttons.Response2 = 0
+            buttons.Response3 = 2
+
+            response = cls.theUfSession.Ui.MessageDialog(
+                title, NXOpen.UF.Ui.MessageDialogType.MESSAGE_QUESTION, message, len(message), True, buttons)
+
+        except NXOpen.NXException as nXException:
+            response = 2
+            cls.theUI.NXMessageBox.Show("Dialog", NXOpen.NXMessageBox.DialogType.Error,
+                                        "Unable to Display Dialog. Error : " + str(nXException.Message))
+
+        return response
+
+
 class Checks:
     theUI = NXOpen.UI.GetUI()
     theUfSession = NXOpen.UF.UFSession.GetUFSession()

@@ -6,7 +6,7 @@ import NXOpen
 import NXOpen.CAM
 import NXOpen.UF
 
-from utils import Checks, Getters, lw
+from utils import Checks, Getters, UI, lw
 
 # import NXOpen.Utilities
 
@@ -19,6 +19,11 @@ class ReportCSETime:
 
     def report_time(self):
         workPart = self.theSession.Parts.Work
+
+        message = [str] * 1
+        message[0] = "Ok to Calculate Machining Time?"
+        if UI.ask_yes_no("trst", message) == 1:
+            workPart.CAMSetup.CalculateMachiningTimes()
 
         if not Checks.check_workpart(workPart):
             return
