@@ -85,7 +85,7 @@ class UI:
     theUI = NXOpen.UI.GetUI()
 
     @classmethod
-    def ask_yes_no(cls, title: str, message: str) -> int:
+    def ask_yes_no(cls, title: str, message: list) -> int:
         """
         Display System Information
         Args:
