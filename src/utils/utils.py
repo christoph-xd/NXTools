@@ -92,6 +92,9 @@ class UI:
             title   : The Title to Display
             message : The Message to Display
             Result  : The Response
+            
+        Returns:
+            int: Give the response from User Answer.
         """
         response = 0
 
@@ -139,11 +142,8 @@ class Checks:
         license = license.decode('ascii')
 
         lic_date = license.split('-')
-        # date_now = str(datetime.date(datetime.now())).split('-')
         lic_date = datetime.date(datetime(int(lic_date[0]), int(
             lic_date[1]), int(lic_date[2])))
-        # date_now = datetime.date(datetime(int(date_now[0]), int(
-        #     date_now[1]), int(date_now[2])))
         if isDebug:
             lw(lic)
             lw(license)
