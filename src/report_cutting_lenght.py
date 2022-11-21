@@ -54,9 +54,9 @@ class ReportCuttingLength:
                 lw(f"Operation Name         :  {operation_info['name']}")
                 lw(f"Tool Name              :  {tool_info['name']}")
                 lw(
-                    f"G1 Length / Time       :  {operation_info['g1']}{unit} / {operation_info['g1_time']}sec")
+                    f"G1 Length / Time       :  {operation_info['g1']} / {operation_info['g1_time']}sec")
                 lw(
-                    f"G0 Length / Time       :  {operation_info['g0']}{unit} / {operation_info['g0_time']}sec")
+                    f"G0 Length / Time       :  {operation_info['g0']} / {operation_info['g0_time']}sec")
                 lw("***************************************************")
 
 
