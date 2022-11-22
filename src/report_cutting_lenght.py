@@ -40,9 +40,13 @@ class ReportCuttingLength:
         unit = Getters.get_base_unit(workPart)
 
         for i in range(num):
+            if self.isDebug:
+                lw(objects1)
             objects1[i] = self.theUI.SelectionManager.GetSelectedTaggedObject(
                 i)
             object = objects1[i]
+            if not type(object) == NXOpen.CAM.CAMObject:
+                return
             if workPart.CAMSetup.IsOperation(object):
                 tool_info = Getters.get_tool_information(object)
                 if self.isDebug:
