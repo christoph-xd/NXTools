@@ -1,17 +1,12 @@
 #############################################################################
 #
 #   Delete all Ude's in the CAM Session
-#   
-#   NX Version: NX1953 Series
-#   NX Version: NX1980 Beta
 #
 #   Written by: Chrsitoph Brandau
 ##############################################################################
 import NXOpen
 import NXOpen.UF
 import NXOpen.CAM
-import assist
-from assist import listing_window as lw
 
 theSession  = NXOpen.Session.GetSession()
 theUfSession  = NXOpen.UF.UFSession.GetUFSession()
@@ -32,7 +27,7 @@ def main():
             objects_in_view = NXOpen.CAM.NCGroup.GetMembers(View)
             pars_view(objects_in_view, UdeType)
                         
-def deleteude(tagged, UdeType):
+def deleteude(tagged:NXOpen.CAM.Operation, UdeType):
     theUfSession.Param.DeleteAllUdes(tagged.Tag,UdeType )
 
 def pars_view(view, UdeType):  
@@ -46,9 +41,6 @@ def pars_view(view, UdeType):
                 deleteude(tagged, UdeType)
 
 if __name__ == '__main__':
-    assist.undoMark('Delete all UDEs', theSession)
-    if assist.check_nx_version(1980, 1953):
-        main()
-        lw('All UDEs are deleted!')
+    main()
 
 

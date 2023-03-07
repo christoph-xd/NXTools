@@ -8,8 +8,6 @@ import NXOpen.UF
 
 from utils import Checks, Getters, UI, lw
 
-# import NXOpen.Utilities
-
 
 class ReportCSETime:
     def __init__(self, isDebug: bool) -> None:
@@ -66,9 +64,11 @@ class ReportCSETime:
             lw("***************************************************")
         return
 
-    def parsing_opration(self, obj):
+    def parsing_opration(self, obj:NXOpen.CAM.Operation):
 
         for object in obj:
+            if isDebug:
+                lw(type(object))
             if not object.Name == 'NONE':
                 if self.workPart.CAMSetup.IsGroup(object):
                     self.parsing_opration(
@@ -77,7 +77,7 @@ class ReportCSETime:
                     self.operationTimes.append(self.get_cse_time(object))
         return
 
-    def get_cse_time(self, operation):
+    def get_cse_time(self, operation:NXOpen.CAM.Operation):
 
         cseTime = {}
 
@@ -119,7 +119,7 @@ class ReportCSETime:
 
 
 if __name__ == '__main__':
-    isDebug = True
+    isDebug = False
     config_file = Path(__file__).parent
     with open(f'{config_file}/config.json', 'r') as f:
         config = json.load(f)

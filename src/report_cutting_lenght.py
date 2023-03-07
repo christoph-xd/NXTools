@@ -45,8 +45,10 @@ class ReportCuttingLength:
             objects1[i] = self.theUI.SelectionManager.GetSelectedTaggedObject(
                 i)
             object = objects1[i]
-            if not type(object) == NXOpen.CAM.CAMObject:
-                return
+            
+            if self.isDebug:
+                lw(type(object))
+                
             if workPart.CAMSetup.IsOperation(object):
                 tool_info = Getters.get_tool_information(object)
                 if self.isDebug:

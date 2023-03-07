@@ -38,7 +38,7 @@ class Getters:
             return "inch"
 
     @classmethod
-    def get_tool_information(cls, object) -> dict:
+    def get_tool_information(cls, object:NXOpen.CAM.Operation) -> dict:
         """
         Get some Information for the tool
         Args:
@@ -53,7 +53,7 @@ class Getters:
         return tool_info
 
     @classmethod
-    def get_operation_information(cls, object) -> dict:
+    def get_operation_information(cls, object:NXOpen.CAM.Operation) -> dict:
         """Retruns the G1 Length, G0 Length and Operation Name
 
         Args:
