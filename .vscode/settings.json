@@ -1,3 +1,4 @@
 {
-    "python.analysis.stubPath": "D:\\APPS\\Siemens\\Release2023"
+    "python.analysis.stubPath": "D:\\APPS\\Siemens\\Release2023",
+    "python.formatting.provider": "black"
 }
