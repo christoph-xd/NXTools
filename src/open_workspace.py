@@ -14,8 +14,11 @@ class OpenWorkSpace:
         self.lic = lic
 
         if self.isDebug:
-            self.theUI.NXMessageBox.Show("Debug Mode", NXOpen.NXMessageBox.DialogType.Information, str(
-                "The Debug Mode is switched one!"))
+            self.theUI.NXMessageBox.Show(
+                "Debug Mode",
+                NXOpen.NXMessageBox.DialogType.Information,
+                str("The Debug Mode is switched one!"),
+            )
 
     def open(self):
         workPart = self.theSession.Parts.Work
@@ -26,16 +29,18 @@ class OpenWorkSpace:
         os.startfile(pathname)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     isDebug = False
     config_file = Path(__file__).parent
 
-    with open(f'{config_file}/config.json', 'r') as f:
+    with open(f"{config_file}/config.json", "r") as f:
         config = json.load(f)
-        workspace_json = config['open_workspace']
-        lic = config['license']
+        workspace_json = config["open_workspace"]
+        lic = config["license"]
 
-    if Checks.check_nx_version(int(workspace_json['version_max']), int(workspace_json['version_min'])):
+    if Checks.check_nx_version(
+        int(workspace_json["version_max"]), int(workspace_json["version_min"])
+    ):
         if Checks.check_lic(lic, isDebug):
             instance = OpenWorkSpace(lic, isDebug)
             instance.open()
