@@ -130,3 +130,4 @@ dmypy.json
 
 src/test.py
 /.vscode
+.vscode/settings.json
