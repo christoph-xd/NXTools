@@ -18,6 +18,7 @@ def lw(output: str):
         pass
 
     theSession.ListingWindow.WriteFullline(str(output))
+    theSession.ListingWindow.Close()
 
 
 class Getters:
@@ -38,7 +39,7 @@ class Getters:
             return "inch"
 
     @classmethod
-    def get_tool_information(cls, object:NXOpen.CAM.Operation) -> dict:
+    def get_tool_information(cls, object: NXOpen.CAM.Operation) -> dict:
         """
         Get some Information for the tool
         Args:
@@ -53,7 +54,7 @@ class Getters:
         return tool_info
 
     @classmethod
-    def get_operation_information(cls, object:NXOpen.CAM.Operation) -> dict:
+    def get_operation_information(cls, object: NXOpen.CAM.Operation) -> dict:
         """Retruns the G1 Length, G0 Length and Operation Name
 
         Args:
@@ -63,12 +64,12 @@ class Getters:
             dict: _description_
         """
         g1_len = round(object.GetToolpathCuttingLength())
-        g0_len = round(object.GetToolpathLength() -
-                       object.GetToolpathCuttingLength())
-        g1_time = round(object.GetToolpathCuttingTime()*60)
-        g0_time = round((object.GetToolpathTime() -
-                        object.GetToolpathCuttingTime())*60)
-
+        g0_len = round(object.GetToolpathLength() - object.GetToolpathCuttingLength())
+        g1_time = round(object.GetToolpathCuttingTime() * 60)
+        g0_time = round(
+            (object.GetToolpathTime() - object.GetToolpathCuttingTime()) * 60
+        )
+        
         operation_info = {
             "name": object.Name,
             "g1": g1_len,
@@ -92,7 +93,7 @@ class UI:
             title   : The Title to Display
             message : The Message to Display
             Result  : The Response
-            
+
         Returns:
             int: Give the response from User Answer.
         """
@@ -111,12 +112,21 @@ class UI:
             buttons.Response3 = 2
 
             response = cls.theUfSession.Ui.MessageDialog(
-                title, NXOpen.UF.Ui.MessageDialogType.MESSAGE_QUESTION, message, len(message), True, buttons)
+                title,
+                NXOpen.UF.Ui.MessageDialogType.MESSAGE_QUESTION,
+                message,
+                len(message),
+                True,
+                buttons,
+            )
 
         except NXOpen.NXException as nXException:
             response = 2
-            cls.theUI.NXMessageBox.Show("Dialog", NXOpen.NXMessageBox.DialogType.Error,
-                                        "Unable to Display Dialog. Error : " + str(nXException.Message))
+            cls.theUI.NXMessageBox.Show(
+                "Dialog",
+                NXOpen.NXMessageBox.DialogType.Error,
+                "Unable to Display Dialog. Error : " + str(nXException.Message),
+            )
 
         return response
 
@@ -137,13 +147,14 @@ class Checks:
         Returns:
             bool: True for a valid License is given.
         """
-        license = lic.encode('ascii')
+        license = lic.encode("ascii")
         license = base64.b64decode(license)
-        license = license.decode('ascii')
+        license = license.decode("ascii")
 
-        lic_date = license.split('-')
-        lic_date = datetime.date(datetime(int(lic_date[0]), int(
-            lic_date[1]), int(lic_date[2])))
+        lic_date = license.split("-")
+        lic_date = datetime.date(
+            datetime(int(lic_date[0]), int(lic_date[1]), int(lic_date[2]))
+        )
         if isDebug:
             lw(lic)
             lw(license)
@@ -151,13 +162,16 @@ class Checks:
 
         if datetime.date(datetime.now()) > lic_date:
             cls.theUI.NXMessageBox.Show(
-                "License Check", NXOpen.NXMessageBox.DialogType.Error, "The Licens is not valid anymore. \nPlease request a new one!")
+                "License Check",
+                NXOpen.NXMessageBox.DialogType.Error,
+                "The Licens is not valid anymore. \nPlease request a new one!",
+            )
             return False
         return True
 
     @classmethod
     def check_nx_version(cls, highV: int, lowV: int) -> bool:
-        """Check if the given Version of fit to the current Version. 
+        """Check if the given Version of fit to the current Version.
 
 
         Args:
@@ -168,11 +182,15 @@ class Checks:
             bool: retruns of NX is in the range of the Versions
         """
         UGRelease = cls.theSession.GetEnvironmentVariableValue(
-            "NX_COMPATIBLE_BASE_RELEASE_VERSION")
-        UGRelease = int(str(UGRelease).replace('v', ''))
+            "NX_COMPATIBLE_BASE_RELEASE_VERSION"
+        )
+        UGRelease = int(str(UGRelease).replace("v", ""))
         if UGRelease > highV or UGRelease < lowV:
             cls.theUI.NXMessageBox.Show(
-                "Version Check", NXOpen.NXMessageBox.DialogType.Error, "The current NX Version don't match to required Version.")
+                "Version Check",
+                NXOpen.NXMessageBox.DialogType.Error,
+                "The current NX Version don't match to required Version.",
+            )
             return False
         return True
 
@@ -184,11 +202,12 @@ class Checks:
             workPart: _description_
 
         Returns:
-            bool: True for Part is open 
+            bool: True for Part is open
         """
         if workPart is None:
             cls.theUI.NXMessageBox.Show(
-                "Part", NXOpen.NXMessageBox.DialogType.Error, "A Part must be Opened.")
+                "Part", NXOpen.NXMessageBox.DialogType.Error, "A Part must be Opened."
+            )
             return False
         return True
 
@@ -202,7 +221,10 @@ class Checks:
         cls.theUfSession.Cam.InitSession()
         setupTag = cls.theUfSession.Setup.AskSetup()
         if setupTag == 0:
-            cls.theUI.NXMessageBox.Show("CamSetup", NXOpen.NXMessageBox.DialogType.Information, str(
-                "No CamSetup in this Part."))
+            cls.theUI.NXMessageBox.Show(
+                "CamSetup",
+                NXOpen.NXMessageBox.DialogType.Information,
+                str("No CamSetup in this Part."),
+            )
             return False
         return True
