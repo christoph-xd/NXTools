@@ -11,5 +11,13 @@
     "report_cse_time": {
         "version_max": "2212",
         "version_min": "2007"
+    },
+    "axis_toolpath":{
+        "version_max": "2212",
+        "version_min": "2007"
+    },
+    "create_toolpath_geo":{
+        "version_max": "2212",
+        "version_min": "2007"
     }
 }

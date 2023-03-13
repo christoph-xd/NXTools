@@ -1,8 +1,10 @@
 import math
+import json
 import NXOpen
 import NXOpen.CAM
 from utils import lw, Checks, UI
 import sys
+from pathlib import Path
 
 
 class CreateAxis:
@@ -302,5 +304,10 @@ class CreateAxis:
 
 
 if __name__ == "__main__":
-    inistance = CreateAxis()
-    inistance.create_axis()
+    config_file = Path(__file__).parent
+    with open(f'{config_file}/config.json', 'r') as f:
+        config = json.load(f)
+        report_json = config['report_cutting_length']
+    if Checks.check_nx_version(int(report_json['version_max']), int(report_json['version_min'])):
+        inistance = CreateAxis()
+        inistance.create_axis()

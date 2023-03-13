@@ -69,7 +69,7 @@ class Getters:
         g0_time = round(
             (object.GetToolpathTime() - object.GetToolpathCuttingTime()) * 60
         )
-
+        
         operation_info = {
             "name": object.Name,
             "g1": g1_len,

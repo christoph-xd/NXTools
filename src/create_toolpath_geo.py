@@ -1,8 +1,9 @@
 import math
+import json
 import NXOpen
 import NXOpen.CAM
 from utils import lw, Checks, UI
-import sys
+from pathlib import Path
 
 
 class CreateGeometry:
@@ -32,6 +33,7 @@ class CreateGeometry:
         centerpoint: NXOpen.Point3d,
         endpoint: NXOpen.Point3d,
         radius: float,
+        direction: int,
     ) -> NXOpen.Point3d:
         v1 = [centerpoint.X - startpoint.X, centerpoint.Y - startpoint.Y]
         v2 = [centerpoint.X - endpoint.X, centerpoint.Y - endpoint.Y]
@@ -40,6 +42,8 @@ class CreateGeometry:
             v2[0] ** 2 + v2[1] ** 2
         )
         angle = math.acos(dot_product / length_product)
+        if direction == 0:
+            angle = -angle
 
         half_angle = angle / 2
         cos_half_angle = math.cos(half_angle)
@@ -47,10 +51,21 @@ class CreateGeometry:
 
         vector = [radius * cos_half_angle, radius * sin_half_angle]
 
+        if direction == 0:
+            vector = [-vector[0], -vector[1]]
+
         x = centerpoint.X + vector[0]
         y = centerpoint.Y + vector[1]
 
         return NXOpen.Point3d(x, y, endpoint.Z)
+    
+    def create_group(self, lineTags:list, groupName:str):
+        groupBuilder = self.workPart.CreateGatewayGroupBuilder(NXOpen.Group.Null)
+        groupBuilder.GroupName = groupName
+        for lineTag in lineTags:
+            obj = NXOpen.TaggedObjectManager.GetTaggedObject(lineTag)
+            groupBuilder.ObjectsInGroup.Add(obj)   
+        groupBuilder.Commit()
 
     def create_point(self, points: NXOpen.Point3d):
         p = self.workPart.Points.CreatePoint(points)
@@ -64,14 +79,24 @@ class CreateGeometry:
         l = self.workPart.Curves.CreateLine(startpoint, endpoint)
         l.SetVisibility(NXOpen.SmartObject.VisibilityOption.Visible)
 
+    def create_uf_line(self, startpoint: NXOpen.Point3d, endpoint: NXOpen.Point3d):
+        startpoint = [startpoint.X, startpoint.Y, startpoint.Z]
+        endpoint = [endpoint.X, endpoint.Y, endpoint.Z]
+        line_coords = NXOpen.UF.Curve.Line(endpoint, startpoint)
+        lineTag = self.theUfSession.Curve.CreateLine(line_coords)
+        return lineTag
+
     def create_arc(
         self,
         startpoint: NXOpen.Point3d,
         centerpoint: NXOpen.Point3d,
         endpoint: NXOpen.Point3d,
         arcRadius: float,
+        direction: int,
     ):
-        pointon = self.calculate_pointon(startpoint, centerpoint, endpoint, arcRadius)
+        pointon = self.calculate_pointon(
+            startpoint, centerpoint, endpoint, arcRadius, direction
+        )
         c = self.workPart.Curves.CreateArc(startpoint, pointon, endpoint, False)
         # c.SetVisibility(NXOpen.SmartObject.VisibilityOption.Visible)
 
@@ -91,7 +116,28 @@ class CreateGeometry:
 
         for i in range(num):
             objects1[i] = selected(i)
-            operationCollection.append(objects1[i])
+            if self.workPart.CAMSetup.IsOperation(objects1[i]):
+                operationCollection.append(objects1[i])
+            else:
+                self.theUI.NXMessageBox.Show(
+                    "Not an Operation",
+                    NXOpen.NXMessageBox.DialogType.Error,
+                    "The seleced Item isn't a Operation",
+                )
+                continue
+            operationBuilder = (
+                self.workPart.CAMSetup.CAMOperationCollection.CreateBuilder(objects1[i])
+            )
+            if (
+                not operationBuilder.MotionOutputBuilder.OutputType
+                == NXOpen.CAM.ArcOutputTypeCiBuilder.OutputTypes.LinearOnly
+            ):
+                self.theUI.NXMessageBox.Show(
+                    "Output Not Line",
+                    NXOpen.NXMessageBox.DialogType.Error,
+                    "The Operation is not Calculated in Line",
+                )
+                return None
 
         return operationCollection
 
@@ -115,8 +161,8 @@ class CreateGeometry:
         endpoint = toolPathCircularMotion.EndPoint
         arcCenter = toolPathCircularMotion.ArcCenter
         arcRadius = toolPathCircularMotion.ArcRadius
-        lw(toolPathCircularMotion.Direction)
-        return endpoint, arcCenter, arcRadius
+        direction = toolPathCircularMotion.Direction
+        return endpoint, arcCenter, arcRadius, direction
 
     def main(self):
         if not Checks.check_workpart(self.workPart):
@@ -132,9 +178,10 @@ class CreateGeometry:
 
         for _, operation in enumerate(operationCollection):
             operation: NXOpen.CAM.Operation = operation
-
+            operationName = operation.Name
             toolPath: NXOpen.CAM.Path = operation.GetPath()
             numberOfToolpathEvents: int = toolPath.NumberOfToolpathEvents
+            lineTags:list = []
 
             startpoint = 0
             endpoint = 0
@@ -155,47 +202,73 @@ class CreateGeometry:
                         camPathMotionShapeType,
                     ) = toolPath.IsToolpathEventAMotion(toolPathEvent)
 
-                    match camPathMotionShapeType:
-                        case NXOpen.CAM.CamPathMotionShapeType.Circular:
-                            endpoint, arcCenter, arcRadius = self.circular_motion(
-                                toolPath, toolPathEvent
-                            )
-                            if self.flagFirstMotion:
-                                self.flagFirstMotion = False
-                                startpoint = endpoint
-                                continue
-                            # self.create_line(startpoint, endpoint)
-                            self.create_arc(startpoint, arcCenter, endpoint, arcRadius)
+                    if (
+                        camPathMotionShapeType
+                        == NXOpen.CAM.CamPathMotionShapeType.Circular
+                    ):
+                        (
+                            endpoint,
+                            arcCenter,
+                            arcRadius,
+                            direction,
+                        ) = self.circular_motion(toolPath, toolPathEvent)
+                        if self.flagFirstMotion:
+                            self.flagFirstMotion = False
                             startpoint = endpoint
-                        case NXOpen.CAM.CamPathMotionShapeType.Helical:
-                            if self.flagFirstMotion:
-                                self.flagFirstMotion = False
-                                startpoint = endpoint
-                                continue
-                            pass
-                        case NXOpen.CAM.CamPathMotionShapeType.Linear:
-                            endpoint = self.linear_motion(toolPath, toolPathEvent)
-                            if self.flagFirstMotion:
-                                self.flagFirstMotion = False
-                                startpoint = endpoint
-                                continue
-                            self.create_line(startpoint, endpoint)
+                            continue
+                        # self.create_line(startpoint, endpoint)
+                        self.create_arc(
+                            startpoint, arcCenter, endpoint, arcRadius, direction
+                        )
+                        startpoint = endpoint
+                    if (
+                        camPathMotionShapeType
+                        == NXOpen.CAM.CamPathMotionShapeType.Helical
+                    ):
+                        if self.flagFirstMotion:
+                            self.flagFirstMotion = False
                             startpoint = endpoint
-                        case NXOpen.CAM.CamPathMotionShapeType.Nurbs:
-                            if self.flagFirstMotion:
-                                self.flagFirstMotion = False
-                                startpoint = endpoint
-                                continue
-                            pass
-                        case NXOpen.CAM.CamPathMotionShapeType.Undefined:
-                            if self.flagFirstMotion:
-                                self.flagFirstMotion = False
-                                startpoint = endpoint
-                                continue
-                            pass
+                            continue
+                        pass
+                    if (
+                        camPathMotionShapeType
+                        == NXOpen.CAM.CamPathMotionShapeType.Linear
+                    ):
+                        endpoint = self.linear_motion(toolPath, toolPathEvent)
+                        if self.flagFirstMotion:
+                            self.flagFirstMotion = False
+                            startpoint = endpoint
+                            continue
+                        lineTags.append(self.create_uf_line(startpoint, endpoint))                        
+                        startpoint = endpoint
+                    if (
+                        camPathMotionShapeType
+                        == NXOpen.CAM.CamPathMotionShapeType.Nurbs
+                    ):
+                        if self.flagFirstMotion:
+                            self.flagFirstMotion = False
+                            startpoint = endpoint
+                            continue
+                        pass
+                    if (
+                        camPathMotionShapeType
+                        == NXOpen.CAM.CamPathMotionShapeType.Undefined
+                    ):
+                        if self.flagFirstMotion:
+                            self.flagFirstMotion = False
+                            startpoint = endpoint
+                            continue
+                        pass
+        self.create_group(lineTags, operationName)
 
 
 if __name__ == "__main__":
-    inistance = CreateGeometry()
-    inistance.main()
-    # C:\Users\chris\Documents\Development\NXTools\src
+    config_file = Path(__file__).parent
+    with open(f"{config_file}/config.json", "r") as f:
+        config = json.load(f)
+        report_json = config["report_cutting_length"]
+    if Checks.check_nx_version(
+        int(report_json["version_max"]), int(report_json["version_min"])
+    ):
+        inistance = CreateGeometry()
+        inistance.main()

@@ -1,286 +1,65 @@
 ﻿# NX 2008
-# Journal created by brandauc on Thu Mar  9 07:20:59 2023 W. Europe Standard Time
+# Journal created by brandauc on Mon Mar 13 12:39:55 2023 W. Europe Standard Time
 #
 import math
 import NXOpen
 import NXOpen.Features
+import NXOpen.GeometricUtilities
 def main() : 
 
     theSession  = NXOpen.Session.GetSession()
     workPart = theSession.Parts.Work
     displayPart = theSession.Parts.Display
     # ----------------------------------------------
-    #   Menu: Insert->Datum->Point...
+    #   Menu: Insert->Curve->Studio Spline...
     # ----------------------------------------------
     markId1 = theSession.SetUndoMark(NXOpen.Session.MarkVisibility.Visible, "Start")
     
-    unit1 = workPart.UnitCollection.FindObject("MilliMeter")
+    studioSplineBuilderEx1 = workPart.Features.CreateStudioSplineBuilderEx(NXOpen.NXObject.Null)
+    
+    origin1 = NXOpen.Point3d(0.0, 0.0, 0.0)
+    normal1 = NXOpen.Vector3d(0.0, 0.0, 1.0)
+    plane1 = workPart.Planes.CreatePlane(origin1, normal1, NXOpen.SmartObject.UpdateOption.WithinModeling)
+    
+    studioSplineBuilderEx1.DrawingPlane = plane1
+    
+    unit1 = studioSplineBuilderEx1.Extender.StartValue.Units
+    
     expression1 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1)
     
-    expression2 = workPart.Expressions.CreateSystemExpressionWithUnits("p76_x=0.00000000000", unit1)
+    expression2 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1)
     
-    expression3 = workPart.Expressions.CreateSystemExpressionWithUnits("p77_y=0.00000000000", unit1)
+    origin2 = NXOpen.Point3d(0.0, 0.0, 0.0)
+    normal2 = NXOpen.Vector3d(0.0, 0.0, 1.0)
+    plane2 = workPart.Planes.CreatePlane(origin2, normal2, NXOpen.SmartObject.UpdateOption.WithinModeling)
     
-    expression4 = workPart.Expressions.CreateSystemExpressionWithUnits("p78_z=0.00000000000", unit1)
+    studioSplineBuilderEx1.MovementPlane = plane2
     
-    expression5 = workPart.Expressions.CreateSystemExpressionWithUnits("p79_xdelta=0.00000000000", unit1)
+    expression3 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1)
     
-    expression6 = workPart.Expressions.CreateSystemExpressionWithUnits("p80_ydelta=0.00000000000", unit1)
+    expression4 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1)
     
-    expression7 = workPart.Expressions.CreateSystemExpressionWithUnits("p81_zdelta=0.00000000000", unit1)
+    studioSplineBuilderEx1.OrientExpress.ReferenceOption = NXOpen.GeometricUtilities.OrientXpressBuilder.Reference.WcsDisplayPart
     
-    expression8 = workPart.Expressions.CreateSystemExpressionWithUnits("p82_radius=0.00000000000", unit1)
+    theSession.SetUndoMarkName(markId1, "Studio Spline Dialog")
     
-    unit2 = workPart.UnitCollection.FindObject("Degrees")
-    expression9 = workPart.Expressions.CreateSystemExpressionWithUnits("p83_angle=0.00000000000", unit2)
+    studioSplineBuilderEx1.MatchKnotsType = NXOpen.Features.StudioSplineBuilderEx.MatchKnotsTypes.NotSet
     
-    expression10 = workPart.Expressions.CreateSystemExpressionWithUnits("p84_zdelta=0.00000000000", unit1)
+    studioSplineBuilderEx1.OrientExpress.AxisOption = NXOpen.GeometricUtilities.OrientXpressBuilder.Axis.Passive
     
-    expression11 = workPart.Expressions.CreateSystemExpressionWithUnits("p85_radius=0.00000000000", unit1)
+    studioSplineBuilderEx1.OrientExpress.PlaneOption = NXOpen.GeometricUtilities.OrientXpressBuilder.Plane.Passive
     
-    expression12 = workPart.Expressions.CreateSystemExpressionWithUnits("p86_angle1=0.00000000000", unit2)
-    
-    expression13 = workPart.Expressions.CreateSystemExpressionWithUnits("p87_angle2=0.00000000000", unit2)
-    
-    expression14 = workPart.Expressions.CreateSystemExpressionWithUnits("p88_distance=0", unit1)
-    
-    expression15 = workPart.Expressions.CreateSystemExpressionWithUnits("p89_arclen=0", unit1)
-    
-    expression16 = workPart.Expressions.CreateSystemExpressionWithUnits("p90_percent=0", NXOpen.Unit.Null)
-    
-    expression2.SetFormula("-261.6631227933")
-    
-    expression3.SetFormula("-92.1485312295")
-    
-    expression4.SetFormula("12.5")
-    
-    expression5.SetFormula("0")
-    
-    expression6.SetFormula("0")
-    
-    expression7.SetFormula("0")
-    
-    expression8.SetFormula("0")
-    
-    expression9.SetFormula("0")
-    
-    expression10.SetFormula("0")
-    
-    expression11.SetFormula("0")
-    
-    expression12.SetFormula("0")
-    
-    expression13.SetFormula("0")
-    
-    expression14.SetFormula("0")
-    
-    expression16.SetFormula("100")
-    
-    expression15.SetFormula("0")
-    
-    expression2.SetFormula("-261.6631227933")
-    
-    expression3.SetFormula("-92.1485312295")
-    
-    expression4.SetFormula("12.5")
-    
-    expression5.SetFormula("0")
-    
-    expression6.SetFormula("0")
-    
-    expression7.SetFormula("0")
-    
-    expression8.SetFormula("0")
-    
-    expression9.SetFormula("0")
-    
-    expression10.SetFormula("0")
-    
-    expression11.SetFormula("0")
-    
-    expression12.SetFormula("0")
-    
-    expression13.SetFormula("0")
-    
-    expression14.SetFormula("0")
-    
-    expression16.SetFormula("100")
-    
-    expression15.SetFormula("0")
-    
-    theSession.SetUndoMarkName(markId1, "Point Dialog")
-    
-    expression17 = workPart.Expressions.CreateSystemExpressionWithUnits("p91_x=0.00000000000", unit1)
-    
-    scalar1 = workPart.Scalars.CreateScalarExpression(expression17, NXOpen.Scalar.DimensionalityType.NotSet, NXOpen.SmartObject.UpdateOption.WithinModeling)
-    
-    expression18 = workPart.Expressions.CreateSystemExpressionWithUnits("p92_y=0.00000000000", unit1)
-    
-    scalar2 = workPart.Scalars.CreateScalarExpression(expression18, NXOpen.Scalar.DimensionalityType.NotSet, NXOpen.SmartObject.UpdateOption.WithinModeling)
-    
-    expression19 = workPart.Expressions.CreateSystemExpressionWithUnits("p93_z=0.00000000000", unit1)
-    
-    scalar3 = workPart.Scalars.CreateScalarExpression(expression19, NXOpen.Scalar.DimensionalityType.NotSet, NXOpen.SmartObject.UpdateOption.WithinModeling)
-    
-    point1 = workPart.Points.CreatePoint(scalar1, scalar2, scalar3, NXOpen.SmartObject.UpdateOption.WithinModeling)
-    
-    expression2.SetFormula("0")
-    
-    expression3.SetFormula("0")
-    
-    expression4.SetFormula("0")
-    
-    expression2.SetFormula("0.00000000000")
-    
-    expression3.SetFormula("0.00000000000")
-    
-    expression4.SetFormula("0.00000000000")
-    
-    expression2.SetFormula("0")
-    
-    expression3.SetFormula("0")
-    
-    expression4.SetFormula("0")
-    
-    expression2.SetFormula("0.00000000000")
-    
-    expression3.SetFormula("0.00000000000")
-    
-    expression4.SetFormula("0.00000000000")
-    
-    expression5.SetFormula("0.00000000000")
-    
-    expression6.SetFormula("0.00000000000")
-    
-    expression7.SetFormula("0.00000000000")
-    
-    expression8.SetFormula("0.00000000000")
-    
-    expression9.SetFormula("0.00000000000")
-    
-    expression10.SetFormula("0.00000000000")
-    
-    expression11.SetFormula("0.00000000000")
-    
-    expression12.SetFormula("0.00000000000")
-    
-    expression13.SetFormula("0.00000000000")
-    
-    expression16.SetFormula("100.00000000000")
-    
-    expression2.SetFormula("999")
-    
-    workPart.Points.DeletePoint(point1)
-    
-    expression2.RightHandSide = "999"
-    
-    expression3.RightHandSide = "0.00000000000"
-    
-    expression4.RightHandSide = "0.00000000000"
-    
-    expression20 = workPart.Expressions.CreateSystemExpressionWithUnits("p77_x=999", unit1)
-    
-    scalar4 = workPart.Scalars.CreateScalarExpression(expression20, NXOpen.Scalar.DimensionalityType.NotSet, NXOpen.SmartObject.UpdateOption.WithinModeling)
-    
-    expression21 = workPart.Expressions.CreateSystemExpressionWithUnits("p78_y=0.00000000000", unit1)
-    
-    scalar5 = workPart.Scalars.CreateScalarExpression(expression21, NXOpen.Scalar.DimensionalityType.NotSet, NXOpen.SmartObject.UpdateOption.WithinModeling)
-    
-    expression22 = workPart.Expressions.CreateSystemExpressionWithUnits("p79_z=0.00000000000", unit1)
-    
-    scalar6 = workPart.Scalars.CreateScalarExpression(expression22, NXOpen.Scalar.DimensionalityType.NotSet, NXOpen.SmartObject.UpdateOption.WithinModeling)
-    
-    point2 = workPart.Points.CreatePoint(scalar4, scalar5, scalar6, NXOpen.SmartObject.UpdateOption.WithinModeling)
-    
-    expression3.SetFormula("888")
-    
-    expression2.RightHandSide = "999"
-    
-    expression3.RightHandSide = "888"
-    
-    expression4.RightHandSide = "0.00000000000"
-    
-    workPart.Points.DeletePoint(point2)
-    
-    expression23 = workPart.Expressions.CreateSystemExpressionWithUnits("p77_x=999", unit1)
-    
-    scalar7 = workPart.Scalars.CreateScalarExpression(expression23, NXOpen.Scalar.DimensionalityType.NotSet, NXOpen.SmartObject.UpdateOption.WithinModeling)
-    
-    expression24 = workPart.Expressions.CreateSystemExpressionWithUnits("p78_y=888", unit1)
-    
-    scalar8 = workPart.Scalars.CreateScalarExpression(expression24, NXOpen.Scalar.DimensionalityType.NotSet, NXOpen.SmartObject.UpdateOption.WithinModeling)
-    
-    expression25 = workPart.Expressions.CreateSystemExpressionWithUnits("p79_z=0.00000000000", unit1)
-    
-    scalar9 = workPart.Scalars.CreateScalarExpression(expression25, NXOpen.Scalar.DimensionalityType.NotSet, NXOpen.SmartObject.UpdateOption.WithinModeling)
-    
-    point3 = workPart.Points.CreatePoint(scalar7, scalar8, scalar9, NXOpen.SmartObject.UpdateOption.WithinModeling)
-    
-    expression4.SetFormula("777")
-    
-    expression2.RightHandSide = "999"
-    
-    expression3.RightHandSide = "888"
-    
-    expression4.RightHandSide = "777"
-    
-    workPart.Points.DeletePoint(point3)
-    
-    expression26 = workPart.Expressions.CreateSystemExpressionWithUnits("p77_x=999", unit1)
-    
-    scalar10 = workPart.Scalars.CreateScalarExpression(expression26, NXOpen.Scalar.DimensionalityType.NotSet, NXOpen.SmartObject.UpdateOption.WithinModeling)
-    
-    expression27 = workPart.Expressions.CreateSystemExpressionWithUnits("p78_y=888", unit1)
-    
-    scalar11 = workPart.Scalars.CreateScalarExpression(expression27, NXOpen.Scalar.DimensionalityType.NotSet, NXOpen.SmartObject.UpdateOption.WithinModeling)
-    
-    expression28 = workPart.Expressions.CreateSystemExpressionWithUnits("p79_z=777", unit1)
-    
-    scalar12 = workPart.Scalars.CreateScalarExpression(expression28, NXOpen.Scalar.DimensionalityType.NotSet, NXOpen.SmartObject.UpdateOption.WithinModeling)
-    
-    point4 = workPart.Points.CreatePoint(scalar10, scalar11, scalar12, NXOpen.SmartObject.UpdateOption.WithinModeling)
-    
-    markId2 = theSession.SetUndoMark(NXOpen.Session.MarkVisibility.Invisible, "Point")
+    markId2 = theSession.SetUndoMark(NXOpen.Session.MarkVisibility.Invisible, "Studio Spline")
     
     theSession.DeleteUndoMark(markId2, None)
     
-    markId3 = theSession.SetUndoMark(NXOpen.Session.MarkVisibility.Invisible, "Point")
+    markId3 = theSession.SetUndoMark(NXOpen.Session.MarkVisibility.Invisible, "Studio Spline")
     
-    expression2.RightHandSide = "999"
-    
-    expression3.RightHandSide = "888"
-    
-    expression4.RightHandSide = "777"
-    
-    workPart.Points.DeletePoint(point4)
-    
-    expression29 = workPart.Expressions.CreateSystemExpressionWithUnits("p77_x=999", unit1)
-    
-    scalar13 = workPart.Scalars.CreateScalarExpression(expression29, NXOpen.Scalar.DimensionalityType.NotSet, NXOpen.SmartObject.UpdateOption.WithinModeling)
-    
-    expression30 = workPart.Expressions.CreateSystemExpressionWithUnits("p78_y=888", unit1)
-    
-    scalar14 = workPart.Scalars.CreateScalarExpression(expression30, NXOpen.Scalar.DimensionalityType.NotSet, NXOpen.SmartObject.UpdateOption.WithinModeling)
-    
-    expression31 = workPart.Expressions.CreateSystemExpressionWithUnits("p79_z=777", unit1)
-    
-    scalar15 = workPart.Scalars.CreateScalarExpression(expression31, NXOpen.Scalar.DimensionalityType.NotSet, NXOpen.SmartObject.UpdateOption.WithinModeling)
-    
-    point5 = workPart.Points.CreatePoint(scalar13, scalar14, scalar15, NXOpen.SmartObject.UpdateOption.WithinModeling)
-    
-    theSession.DeleteUndoMark(markId3, None)
-    
-    theSession.SetUndoMarkName(markId1, "Point")
+    studioSplineBuilderEx1.Destroy()
     
     try:
         # Expression is still in use.
         workPart.Expressions.Delete(expression2)
-    except NXOpen.NXException as ex:
-        ex.AssertErrorCode(1050029)
-        
-    try:
-        # Expression is still in use.
-        workPart.Expressions.Delete(expression3)
     except NXOpen.NXException as ex:
         ex.AssertErrorCode(1050029)
         
@@ -292,10 +71,102 @@ def main() :
         
     try:
         # Expression is still in use.
-        workPart.Expressions.Delete(expression5)
+        workPart.Expressions.Delete(expression1)
     except NXOpen.NXException as ex:
         ex.AssertErrorCode(1050029)
         
+    try:
+        # Expression is still in use.
+        workPart.Expressions.Delete(expression3)
+    except NXOpen.NXException as ex:
+        ex.AssertErrorCode(1050029)
+        
+    theSession.UndoToMark(markId1, None)
+    
+    theSession.DeleteUndoMark(markId1, None)
+    
+    # ----------------------------------------------
+    #   Menu: Insert->Curve->Line...
+    # ----------------------------------------------
+    markId4 = theSession.SetUndoMark(NXOpen.Session.MarkVisibility.Visible, "Start")
+    
+    associativeLineBuilder1 = workPart.BaseFeatures.CreateAssociativeLineBuilder(NXOpen.Features.AssociativeLine.Null)
+    
+    origin3 = NXOpen.Point3d(0.0, 0.0, 0.0)
+    normal3 = NXOpen.Vector3d(0.0, 0.0, 1.0)
+    plane3 = workPart.Planes.CreatePlane(origin3, normal3, NXOpen.SmartObject.UpdateOption.WithinModeling)
+    
+    expression5 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1)
+    
+    expression6 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1)
+    
+    associativeLineBuilder1.Limits.StartLimit.Distance.SetFormula("0")
+    
+    associativeLineBuilder1.StartPointOptions = NXOpen.Features.AssociativeLineBuilder.StartOption.Point
+    
+    associativeLineBuilder1.StartAngle.SetFormula("0")
+    
+    associativeLineBuilder1.EndPointOptions = NXOpen.Features.AssociativeLineBuilder.EndOption.Point
+    
+    associativeLineBuilder1.EndAngle.SetFormula("0")
+    
+    associativeLineBuilder1.Limits.StartLimit.LimitOption = NXOpen.GeometricUtilities.CurveExtendData.LimitOptions.AtPoint
+    
+    associativeLineBuilder1.Limits.StartLimit.Distance.SetFormula("0")
+    
+    associativeLineBuilder1.Limits.EndLimit.LimitOption = NXOpen.GeometricUtilities.CurveExtendData.LimitOptions.AtPoint
+    
+    associativeLineBuilder1.Limits.EndLimit.Distance.SetFormula("21.5358302034802")
+    
+    associativeLineBuilder1.StartPointOptions = NXOpen.Features.AssociativeLineBuilder.StartOption.Inferred
+    
+    associativeLineBuilder1.EndPointOptions = NXOpen.Features.AssociativeLineBuilder.EndOption.Inferred
+    
+    theSession.SetUndoMarkName(markId4, "Line Dialog")
+    
+    expression7 = workPart.Expressions.CreateSystemExpression("0")
+    
+    scalar1 = workPart.Scalars.CreateScalarExpression(expression7, NXOpen.Scalar.DimensionalityType.NotSet, NXOpen.SmartObject.UpdateOption.WithinModeling)
+    
+    extractFace1 = workPart.Features.FindObject("LINKED_BODY(1)")
+    edge1 = extractFace1.FindObject("EDGE * 364 * 383 {(-47.5774312966003,-76.0426066834721,182.2000000000001)(-48.8541218299192,-75.2287496920385,182.2000000000001)(-50.116894000743,-74.3934603020874,182.2000000000001) LINKED_BODY(1)}")
+    point1 = workPart.Points.CreatePoint(edge1, scalar1, NXOpen.PointCollection.PointOnCurveLocationOption.PercentParameter, NXOpen.SmartObject.UpdateOption.WithinModeling)
+    
+    associativeLineBuilder1.StartPoint.Value = point1
+    
+    associativeLineBuilder1.StartPointOptions = NXOpen.Features.AssociativeLineBuilder.StartOption.Point
+    
+    expression8 = workPart.Expressions.CreateSystemExpression("0")
+    
+    scalar2 = workPart.Scalars.CreateScalarExpression(expression8, NXOpen.Scalar.DimensionalityType.NotSet, NXOpen.SmartObject.UpdateOption.WithinModeling)
+    
+    edge2 = extractFace1.FindObject("EDGE * 363 * 383 {(-39.3681803303588,-80.5992331072468,182.2000000000001)(-40.722948239988,-79.9232850090837,182.2000000000001)(-42.0661143290494,-79.2245670562819,182.2000000000001) LINKED_BODY(1)}")
+    point2 = workPart.Points.CreatePoint(edge2, scalar2, NXOpen.PointCollection.PointOnCurveLocationOption.PercentParameter, NXOpen.SmartObject.UpdateOption.WithinModeling)
+    
+    associativeLineBuilder1.Limits.StartLimit.Distance.SetFormula("0")
+    
+    associativeLineBuilder1.Limits.EndLimit.Distance.SetFormula("9.38907054998417")
+    
+    associativeLineBuilder1.Limits.EndLimit.Distance.SetFormula("9.38907054998417")
+    
+    associativeLineBuilder1.EndPoint.Value = point2
+    
+    associativeLineBuilder1.EndPointOptions = NXOpen.Features.AssociativeLineBuilder.EndOption.Point
+    
+    markId5 = theSession.SetUndoMark(NXOpen.Session.MarkVisibility.Invisible, "Line")
+    
+    theSession.DeleteUndoMark(markId5, None)
+    
+    markId6 = theSession.SetUndoMark(NXOpen.Session.MarkVisibility.Invisible, "Line")
+    
+    nXObject1 = associativeLineBuilder1.Commit()
+    
+    theSession.DeleteUndoMark(markId6, None)
+    
+    theSession.SetUndoMarkName(markId4, "Line")
+    
+    associativeLineBuilder1.Destroy()
+    
     try:
         # Expression is still in use.
         workPart.Expressions.Delete(expression6)
@@ -304,79 +175,11 @@ def main() :
         
     try:
         # Expression is still in use.
-        workPart.Expressions.Delete(expression7)
+        workPart.Expressions.Delete(expression5)
     except NXOpen.NXException as ex:
         ex.AssertErrorCode(1050029)
         
-    try:
-        # Expression is still in use.
-        workPart.Expressions.Delete(expression8)
-    except NXOpen.NXException as ex:
-        ex.AssertErrorCode(1050029)
-        
-    try:
-        # Expression is still in use.
-        workPart.Expressions.Delete(expression9)
-    except NXOpen.NXException as ex:
-        ex.AssertErrorCode(1050029)
-        
-    try:
-        # Expression is still in use.
-        workPart.Expressions.Delete(expression10)
-    except NXOpen.NXException as ex:
-        ex.AssertErrorCode(1050029)
-        
-    try:
-        # Expression is still in use.
-        workPart.Expressions.Delete(expression11)
-    except NXOpen.NXException as ex:
-        ex.AssertErrorCode(1050029)
-        
-    try:
-        # Expression is still in use.
-        workPart.Expressions.Delete(expression12)
-    except NXOpen.NXException as ex:
-        ex.AssertErrorCode(1050029)
-        
-    try:
-        # Expression is still in use.
-        workPart.Expressions.Delete(expression13)
-    except NXOpen.NXException as ex:
-        ex.AssertErrorCode(1050029)
-        
-    try:
-        # Expression is still in use.
-        workPart.Expressions.Delete(expression14)
-    except NXOpen.NXException as ex:
-        ex.AssertErrorCode(1050029)
-        
-    try:
-        # Expression is still in use.
-        workPart.Expressions.Delete(expression15)
-    except NXOpen.NXException as ex:
-        ex.AssertErrorCode(1050029)
-        
-    try:
-        # Expression is still in use.
-        workPart.Expressions.Delete(expression16)
-    except NXOpen.NXException as ex:
-        ex.AssertErrorCode(1050029)
-        
-    workPart.MeasureManager.SetPartTransientModification()
-    
-    workPart.Expressions.Delete(expression1)
-    
-    workPart.MeasureManager.ClearPartTransientModification()
-    
-    point5.SetVisibility(NXOpen.SmartObject.VisibilityOption.Visible)
-    
-    pointFeatureBuilder1 = workPart.BaseFeatures.CreatePointFeatureBuilder(NXOpen.Features.Feature.Null)
-    
-    pointFeatureBuilder1.Point = point5
-    
-    nXObject1 = pointFeatureBuilder1.Commit()
-    
-    pointFeatureBuilder1.Destroy()
+    plane3.DestroyPlane()
     
     # ----------------------------------------------
     #   Menu: Tools->Journal->Stop Recording
@@ -384,41 +187,3 @@ def main() :
     
 if __name__ == '__main__':
     main()
-    
-    
-    
-    #  expressionX = self.workPart.Expressions.CreateSystemExpressionWithUnits(
-    #         str(endPoints.X), self.unit
-    #     )
-    #     expressionY = self.workPart.Expressions.CreateSystemExpressionWithUnits(
-    #         str(endPoints.Y), self.unit
-    #     )
-    #     expressionZ = self.workPart.Expressions.CreateSystemExpressionWithUnits(
-    #         str(endPoints.Z), self.unit
-    #     )
-
-    #     scalarX = self.workPart.Scalars.CreateScalarExpression(
-    #         expressionX,
-    #         NXOpen.Scalar.DimensionalityType.NotSet,
-    #         NXOpen.SmartObject.UpdateOption.WithinModeling,
-    #     )
-    #     scalarY = self.workPart.Scalars.CreateScalarExpression(
-    #         expressionY,
-    #         NXOpen.Scalar.DimensionalityType.NotSet,
-    #         NXOpen.SmartObject.UpdateOption.WithinModeling,
-    #     )
-    #     scalarZ = self.workPart.Scalars.CreateScalarExpression(
-    #         expressionZ,
-    #         NXOpen.Scalar.DimensionalityType.NotSet,
-    #         NXOpen.SmartObject.UpdateOption.WithinModeling,
-    #     )
-
-    #     point = self.workPart.Points.CreatePoint(
-    #         scalarX, scalarY, scalarZ, NXOpen.SmartObject.UpdateOption.WithinModeling
-    #     )
-    #     point.SetVisibility(NXOpen.SmartObject.VisibilityOption.Visible)
-    #     pointFeatureBuilder1 = self.workPart.BaseFeatures.CreatePointFeatureBuilder(
-    #         NXOpen.Features.Feature.Null
-    #     )
-    #     pointFeatureBuilder1.Point = point
-    #     pointFeatureBuilder1.Commit()
