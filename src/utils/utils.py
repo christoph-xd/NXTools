@@ -23,6 +23,10 @@ def lw(output: str):
 
 class Getters:
     @classmethod
+    def get_lang(cls, theSession: NXOpen.Session) -> str:
+        return theSession.GetEnvironmentVariableValue("UGII_LANG")
+
+    @classmethod
     def get_base_unit(cls, workPart: NXOpen.Part) -> str:
         """
         Retrun the Unit of the active part
@@ -69,7 +73,7 @@ class Getters:
         g0_time = round(
             (object.GetToolpathTime() - object.GetToolpathCuttingTime()) * 60
         )
-        
+
         operation_info = {
             "name": object.Name,
             "g1": g1_len,

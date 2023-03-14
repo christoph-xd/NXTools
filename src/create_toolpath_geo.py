@@ -2,7 +2,7 @@ import math
 import json
 import NXOpen
 import NXOpen.CAM
-from utils import lw, Checks, UI
+from utils import lw, Checks, UI, Getters
 from pathlib import Path
 
 
@@ -15,6 +15,7 @@ class CreateGeometry:
         self.unit = self.workPart.UnitCollection.FindObject("MilliMeter")
         self.flagFirstMotion = True
         self.flagLastMotion = True
+        self.locale = Getters.get_lang(self.theSession)
 
     def calculate_endpoint(
         self, point: NXOpen.Point3d, vector: NXOpen.Vector3d
@@ -33,7 +34,7 @@ class CreateGeometry:
         centerpoint: NXOpen.Point3d,
         endpoint: NXOpen.Point3d,
         radius: float,
-        direction: int,
+        direction: NXOpen.CAM.CamPathDir,
     ) -> NXOpen.Point3d:
         v1 = [centerpoint.X - startpoint.X, centerpoint.Y - startpoint.Y]
         v2 = [centerpoint.X - endpoint.X, centerpoint.Y - endpoint.Y]
@@ -41,8 +42,9 @@ class CreateGeometry:
         length_product = math.sqrt(v1[0] ** 2 + v1[1] ** 2) * math.sqrt(
             v2[0] ** 2 + v2[1] ** 2
         )
+
         angle = math.acos(dot_product / length_product)
-        if direction == 0:
+        if direction == NXOpen.CAM.CamPathDir.Clockwise:
             angle = -angle
 
         half_angle = angle / 2
@@ -51,20 +53,20 @@ class CreateGeometry:
 
         vector = [radius * cos_half_angle, radius * sin_half_angle]
 
-        if direction == 0:
+        if direction == NXOpen.CAM.CamPathDir.Clockwise:
             vector = [-vector[0], -vector[1]]
 
         x = centerpoint.X + vector[0]
         y = centerpoint.Y + vector[1]
 
         return NXOpen.Point3d(x, y, endpoint.Z)
-    
-    def create_group(self, lineTags:list, groupName:str):
+
+    def create_group(self, lineTags: list, groupName: str):
         groupBuilder = self.workPart.CreateGatewayGroupBuilder(NXOpen.Group.Null)
         groupBuilder.GroupName = groupName
         for lineTag in lineTags:
             obj = NXOpen.TaggedObjectManager.GetTaggedObject(lineTag)
-            groupBuilder.ObjectsInGroup.Add(obj)   
+            groupBuilder.ObjectsInGroup.Add(obj)
         groupBuilder.Commit()
 
     def create_point(self, points: NXOpen.Point3d):
@@ -165,6 +167,7 @@ class CreateGeometry:
         return endpoint, arcCenter, arcRadius, direction
 
     def main(self):
+        # lw(Getters.get_lang(self.theSession))
         if not Checks.check_workpart(self.workPart):
             return
 
@@ -181,7 +184,19 @@ class CreateGeometry:
             operationName = operation.Name
             toolPath: NXOpen.CAM.Path = operation.GetPath()
             numberOfToolpathEvents: int = toolPath.NumberOfToolpathEvents
-            lineTags:list = []
+            lineTags: list = []
+
+            if numberOfToolpathEvents > 10000:
+                response = UI.ask_yes_no(
+                    "Continue",
+                    [
+                        f"There are a big amount of Lines ({numberOfToolpathEvents})!\nYou are sure you want continue?"
+                    ],
+                )
+
+                if response == 2:
+                    lw("User Abort")
+                    return
 
             startpoint = 0
             endpoint = 0
@@ -239,7 +254,7 @@ class CreateGeometry:
                             self.flagFirstMotion = False
                             startpoint = endpoint
                             continue
-                        lineTags.append(self.create_uf_line(startpoint, endpoint))                        
+                        lineTags.append(self.create_uf_line(startpoint, endpoint))
                         startpoint = endpoint
                     if (
                         camPathMotionShapeType
