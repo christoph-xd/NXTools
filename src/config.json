@@ -1,5 +1,4 @@
 {
-    "license": "MjAyMy0wNS0xMA==",
     "open_workspace": {
         "version_max": "2212",
         "version_min": "2007"
@@ -12,11 +11,15 @@
         "version_max": "2212",
         "version_min": "2007"
     },
-    "axis_toolpath":{
+    "axis_toolpath": {
         "version_max": "2212",
         "version_min": "2007"
     },
-    "create_toolpath_geo":{
+    "create_toolpath_geo": {
+        "version_max": "2212",
+        "version_min": "2007"
+    },
+    "del_all_ude": {
         "version_max": "2212",
         "version_min": "2007"
     }

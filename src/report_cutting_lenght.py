@@ -45,10 +45,10 @@ class ReportCuttingLength:
             objects1[i] = self.theUI.SelectionManager.GetSelectedTaggedObject(
                 i)
             object = objects1[i]
-            
+
             if self.isDebug:
                 lw(type(object))
-                
+
             if workPart.CAMSetup.IsOperation(object):
                 tool_info = Getters.get_tool_information(object)
                 if self.isDebug:
@@ -71,9 +71,7 @@ if __name__ == '__main__':
     config_file = Path(__file__).parent
     with open(f'{config_file}/config.json', 'r') as f:
         config = json.load(f)
-        report_json = config['report_cutting_length']
-        lic = config['license']
-    if Checks.check_nx_version(int(report_json['version_max']), int(report_json['version_min'])):
-        if Checks.check_lic(lic, isDebug=False):
-            report = ReportCuttingLength(isDebug)
-            report.main()
+        versions = config['report_cutting_length']
+    if Checks.check_nx_version(int(versions['version_max']), int(versions['version_min'])):
+        report = ReportCuttingLength(isDebug)
+        report.main()

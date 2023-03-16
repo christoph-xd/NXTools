@@ -4,7 +4,7 @@ from datetime import datetime
 import NXOpen
 import NXOpen.UF
 from locale.language_package import Core
-from utils.basic import BasicFunctions as BF 
+from utils.basic import BasicFunctions as BF
 from locale.language_package import Core
 
 
@@ -25,9 +25,6 @@ def lw(output: str):
 
 
 class Getters:
-    @classmethod
-    def get_lang(cls, theSession: NXOpen.Session) -> str:
-        return theSession.GetEnvironmentVariableValue("UGII_LANG")
 
     @classmethod
     def get_base_unit(cls, workPart: NXOpen.Part) -> str:
@@ -71,7 +68,8 @@ class Getters:
             dict: _description_
         """
         g1_len = round(object.GetToolpathCuttingLength())
-        g0_len = round(object.GetToolpathLength() - object.GetToolpathCuttingLength())
+        g0_len = round(object.GetToolpathLength() -
+                       object.GetToolpathCuttingLength())
         g1_time = round(object.GetToolpathCuttingTime() * 60)
         g0_time = round(
             (object.GetToolpathTime() - object.GetToolpathCuttingTime()) * 60
@@ -91,14 +89,14 @@ class Getters:
 class UI:
     theUfSession = NXOpen.UF.UFSession.GetUFSession()
     theUI = NXOpen.UI.GetUI()
-    
+
     @classmethod
     def user_abort(cls):
         cls.theUI.NXMessageBox.Show(
-                BF.get_text(Core.UserAbort),
-                NXOpen.NXMessageBox.DialogType.Error,
-                BF.get_text(Core.UserAbort),
-            )
+            BF.get_text(Core.UserAbort),
+            NXOpen.NXMessageBox.DialogType.Error,
+            BF.get_text(Core.UserAbort),
+        )
 
     @classmethod
     def ask_yes_no(cls, title: str, message: list) -> int:
@@ -140,7 +138,8 @@ class UI:
             cls.theUI.NXMessageBox.Show(
                 "Dialog",
                 NXOpen.NXMessageBox.DialogType.Error,
-                "Unable to Display Dialog. Error : " + str(nXException.Message),
+                "Unable to Display Dialog. Error : " +
+                str(nXException.Message),
             )
 
         return response
@@ -202,9 +201,9 @@ class Checks:
         UGRelease = int(str(UGRelease).replace("v", ""))
         if UGRelease > highV or UGRelease < lowV:
             cls.theUI.NXMessageBox.Show(
-                "Version Check",
+                BF.get_text(Core.VersionCheckHeader),
                 NXOpen.NXMessageBox.DialogType.Error,
-                "The current NX Version don't match to required Version.",
+                BF.get_text(Core.VersionCheck),
             )
             return False
         return True
@@ -221,7 +220,9 @@ class Checks:
         """
         if workPart is None:
             cls.theUI.NXMessageBox.Show(
-                "Part", NXOpen.NXMessageBox.DialogType.Error, "A Part must be Opened."
+                BF.get_text(Core.WorkPartCheckHeader),
+                NXOpen.NXMessageBox.DialogType.Error,
+                BF.get_text(Core.VersionCheck)
             )
             return False
         return True
@@ -237,9 +238,9 @@ class Checks:
         setupTag = cls.theUfSession.Setup.AskSetup()
         if setupTag == 0:
             cls.theUI.NXMessageBox.Show(
-                "CamSetup",
+                BF.get_text(Core.SetupCheckHeader),
                 NXOpen.NXMessageBox.DialogType.Information,
-                str("No CamSetup in this Part."),
+                BF.get_text(Core.SetupCheck),
             )
             return False
         return True

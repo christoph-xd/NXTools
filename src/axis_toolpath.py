@@ -307,7 +307,7 @@ if __name__ == "__main__":
     config_file = Path(__file__).parent
     with open(f'{config_file}/config.json', 'r') as f:
         config = json.load(f)
-        report_json = config['report_cutting_length']
-    if Checks.check_nx_version(int(report_json['version_max']), int(report_json['version_min'])):
+        versions = config['report_cutting_length']
+    if Checks.check_nx_version(int(versions['version_max']), int(versions['version_min'])):
         inistance = CreateAxis()
         inistance.create_axis()

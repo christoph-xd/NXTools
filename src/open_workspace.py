@@ -7,11 +7,10 @@ from utils import Checks
 
 
 class OpenWorkSpace:
-    def __init__(self, lic: str, isDebug: bool = False) -> None:
+    def __init__(self, isDebug: bool = False) -> None:
         self.theUI = NXOpen.UI.GetUI()
         self.theSession = NXOpen.Session.GetSession()
         self.isDebug = isDebug
-        self.lic = lic
 
         if self.isDebug:
             self.theUI.NXMessageBox.Show(
@@ -35,12 +34,7 @@ if __name__ == "__main__":
 
     with open(f"{config_file}/config.json", "r") as f:
         config = json.load(f)
-        workspace_json = config["open_workspace"]
-        lic = config["license"]
-
-    if Checks.check_nx_version(
-        int(workspace_json["version_max"]), int(workspace_json["version_min"])
-    ):
-        if Checks.check_lic(lic, isDebug):
-            instance = OpenWorkSpace(lic, isDebug)
-            instance.open()
+        versions = config["open_workspace"]
+    if Checks.check_nx_version(int(versions["version_max"]), int(versions["version_min"])):
+        instance = OpenWorkSpace(isDebug)
+        instance.open()

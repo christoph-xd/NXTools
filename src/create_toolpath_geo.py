@@ -4,6 +4,8 @@ import NXOpen
 import NXOpen.CAM
 from utils import lw, Checks, UI, Getters
 from pathlib import Path
+from locale.language_package import CreateToolpathGeo as CTG
+from utils import BasicFunctions as BF
 
 
 class CreateGeometry:
@@ -15,7 +17,6 @@ class CreateGeometry:
         self.unit = self.workPart.UnitCollection.FindObject("MilliMeter")
         self.flagFirstMotion = True
         self.flagLastMotion = True
-        self.locale = Getters.get_lang(self.theSession)
 
     def calculate_endpoint(
         self, point: NXOpen.Point3d, vector: NXOpen.Vector3d
@@ -62,7 +63,8 @@ class CreateGeometry:
         return NXOpen.Point3d(x, y, endpoint.Z)
 
     def create_group(self, lineTags: list, groupName: str):
-        groupBuilder = self.workPart.CreateGatewayGroupBuilder(NXOpen.Group.Null)
+        groupBuilder = self.workPart.CreateGatewayGroupBuilder(
+            NXOpen.Group.Null)
         groupBuilder.GroupName = groupName
         for lineTag in lineTags:
             obj = NXOpen.TaggedObjectManager.GetTaggedObject(lineTag)
@@ -99,9 +101,10 @@ class CreateGeometry:
         pointon = self.calculate_pointon(
             startpoint, centerpoint, endpoint, arcRadius, direction
         )
-        c = self.workPart.Curves.CreateArc(startpoint, pointon, endpoint, False)
+        c = self.workPart.Curves.CreateArc(
+            startpoint, pointon, endpoint, False)
         # c.SetVisibility(NXOpen.SmartObject.VisibilityOption.Visible)
-    
+
     def create_uf_arc(self):
         self.theUfSession.Curve.CreateArc()
 
@@ -112,9 +115,9 @@ class CreateGeometry:
 
         if num != 1:
             self.theUI.NXMessageBox.Show(
-                "Select Operation",
+                BF.get_text(CTG.ErrorSelectHeader),
                 NXOpen.NXMessageBox.DialogType.Error,
-                "Select only 1 Operation!",
+                BF.get_text(CTG.ErrorSelect),
             )
             return None
         selected = self.theUI.SelectionManager.GetSelectedTaggedObject
@@ -125,22 +128,23 @@ class CreateGeometry:
                 operationCollection.append(objects1[i])
             else:
                 self.theUI.NXMessageBox.Show(
-                    "Not an Operation",
+                    BF.get_text(CTG.ErrorNotOperationHeader),
                     NXOpen.NXMessageBox.DialogType.Error,
-                    "The seleced Item isn't a Operation",
+                    BF.get_text(CTG.ErrorNotOperation),
                 )
                 continue
             operationBuilder = (
-                self.workPart.CAMSetup.CAMOperationCollection.CreateBuilder(objects1[i])
+                self.workPart.CAMSetup.CAMOperationCollection.CreateBuilder(
+                    objects1[i])
             )
             if (
                 not operationBuilder.MotionOutputBuilder.OutputType
                 == NXOpen.CAM.ArcOutputTypeCiBuilder.OutputTypes.LinearOnly
             ):
                 self.theUI.NXMessageBox.Show(
-                    "Output Not Line",
+                    BF.get_text(CTG.ErrorNotLineHeader),
                     NXOpen.NXMessageBox.DialogType.Error,
-                    "The Operation is not Calculated in Line",
+                    BF.get_text(CTG.ErrorNotLine),
                 )
                 return None
 
@@ -191,14 +195,14 @@ class CreateGeometry:
 
             if numberOfToolpathEvents > 10000:
                 response = UI.ask_yes_no(
-                    "Continue",
+                    BF.get_text(CTG.AskYesNoToolpathAmountHeader),
                     [
-                        f"There are a big amount of Lines ({numberOfToolpathEvents})!\nYou are sure you want continue?"
+                        BF.get_text(CTG.AskYesNoToolpathAmount)
                     ],
                 )
 
                 if response == 2:
-                    lw("User Abort")
+                    UI.user_abort()
                     return
 
             startpoint = 0
@@ -257,7 +261,8 @@ class CreateGeometry:
                             self.flagFirstMotion = False
                             startpoint = endpoint
                             continue
-                        lineTags.append(self.create_uf_line(startpoint, endpoint))
+                        lineTags.append(
+                            self.create_uf_line(startpoint, endpoint))
                         startpoint = endpoint
                     if (
                         camPathMotionShapeType

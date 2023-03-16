@@ -7,10 +7,11 @@
 import NXOpen
 import NXOpen.UF
 import NXOpen.CAM
-from utils import UI, lw
+from utils import UI, lw, Checks
 from utils.basic import BasicFunctions as BF
 from locale.language_package import DeleteAllUDE as Text
-
+import json
+from pathlib import Path
 
 
 class DelAllUde:
@@ -21,7 +22,8 @@ class DelAllUde:
         self.theUI = NXOpen.UI.GetUI()
 
     def main(self):
-        response = UI.ask_yes_no(BF.get_text(Text.AskYesNoHeader), [BF.get_text(Text.AskYesNo)])
+        response = UI.ask_yes_no(BF.get_text(Text.AskYesNoHeader), [
+                                 BF.get_text(Text.AskYesNo)])
         if response == 2:
             UI.user_abort()
             return
@@ -31,9 +33,12 @@ class DelAllUde:
             NXOpen.UF.Ude.SetType.ValueOf(3),
         ]
         AllViews = [
-            self.workPart.CAMSetup.GetRoot(NXOpen.CAM.CAMSetup.View.ProgramOrder),
-            self.workPart.CAMSetup.GetRoot(NXOpen.CAM.CAMSetup.View.MachineTool),
-            self.workPart.CAMSetup.GetRoot(NXOpen.CAM.CAMSetup.View.MachineMethod),
+            self.workPart.CAMSetup.GetRoot(
+                NXOpen.CAM.CAMSetup.View.ProgramOrder),
+            self.workPart.CAMSetup.GetRoot(
+                NXOpen.CAM.CAMSetup.View.MachineTool),
+            self.workPart.CAMSetup.GetRoot(
+                NXOpen.CAM.CAMSetup.View.MachineMethod),
             self.workPart.CAMSetup.GetRoot(NXOpen.CAM.CAMSetup.View.Geometry),
         ]
 
@@ -57,5 +62,11 @@ class DelAllUde:
 
 
 if __name__ == "__main__":
-    instance = DelAllUde()
-    instance.main()
+    config_file = Path(__file__).parent
+
+    with open(f"{config_file}/config.json", "r") as f:
+        config = json.load(f)
+        versions = config["del_all_ude"]
+        if Checks.check_nx_version(int(versions["version_max"]), int(versions["version_min"])):
+            instance = DelAllUde()
+            instance.main()
