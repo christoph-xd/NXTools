@@ -3,6 +3,9 @@ from datetime import datetime
 
 import NXOpen
 import NXOpen.UF
+from locale.language_package import Core
+from utils.basic import BasicFunctions as BF 
+from locale.language_package import Core
 
 
 def lw(output: str):
@@ -88,6 +91,14 @@ class Getters:
 class UI:
     theUfSession = NXOpen.UF.UFSession.GetUFSession()
     theUI = NXOpen.UI.GetUI()
+    
+    @classmethod
+    def user_abort(cls):
+        cls.theUI.NXMessageBox.Show(
+                BF.get_text(Core.UserAbort),
+                NXOpen.NXMessageBox.DialogType.Error,
+                BF.get_text(Core.UserAbort),
+            )
 
     @classmethod
     def ask_yes_no(cls, title: str, message: list) -> int:
@@ -108,9 +119,9 @@ class UI:
             buttons.Button1 = True
             buttons.Button2 = False
             buttons.Button3 = True
-            buttons.Label1 = "Yes"
+            buttons.Label1 = BF.get_text(Core.Yes)
             buttons.Label2 = None
-            buttons.Label3 = "No"
+            buttons.Label3 = BF.get_text(Core.No)
             buttons.Response1 = 1
             buttons.Response2 = 0
             buttons.Response3 = 2

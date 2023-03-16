@@ -101,6 +101,9 @@ class CreateGeometry:
         )
         c = self.workPart.Curves.CreateArc(startpoint, pointon, endpoint, False)
         # c.SetVisibility(NXOpen.SmartObject.VisibilityOption.Visible)
+    
+    def create_uf_arc(self):
+        self.theUfSession.Curve.CreateArc()
 
     def selected_operation(self) -> list:
         operationCollection = []
