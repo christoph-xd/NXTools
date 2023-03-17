@@ -22,24 +22,57 @@ class DelAllUde:
         self.theUI = NXOpen.UI.GetUI()
 
     def main(self):
-        response = UI.ask_yes_no(BF.get_text(Text.AskYesNoHeader), [
-                                 BF.get_text(Text.AskYesNo)])
-        if response == 2:
+        AllViews = []
+        if not Checks.check_workpart(self.workPart):
+            return
+        if not Checks.check_setup():
+            return
+
+        response = UI.ask_yes_no(
+            BF.get_text(Text.AskDelProgrammViewHeader),
+            [BF.get_text(Text.AskDelProgrammView)],
+        )
+        if response == 1:
+            AllViews.append(
+                self.workPart.CAMSetup.GetRoot(NXOpen.CAM.CAMSetup.View.ProgramOrder)
+            )
+
+        response = UI.ask_yes_no(
+            BF.get_text(Text.AskDelToolViewHeader),
+            [BF.get_text(Text.AskDelToolView)],
+        )
+        if response == 1:
+            AllViews.append(
+                self.workPart.CAMSetup.GetRoot(NXOpen.CAM.CAMSetup.View.MachineTool)
+            )
+
+        response = UI.ask_yes_no(
+            BF.get_text(Text.AskDelGeoViewHeader),
+            [BF.get_text(Text.AskDelGeoView)],
+        )
+        if response == 1:
+            AllViews.append(
+                self.workPart.CAMSetup.GetRoot(NXOpen.CAM.CAMSetup.View.Geometry)
+            )
+
+        response = UI.ask_yes_no(
+            BF.get_text(Text.AskDelMethodViewHeader),
+            [BF.get_text(Text.AskDelMethodView)],
+        )
+
+        if response == 1:
+            AllViews.append(
+                self.workPart.CAMSetup.GetRoot(NXOpen.CAM.CAMSetup.View.MachineMethod)
+            )
+
+        if len(AllViews) == 0:
             UI.user_abort()
             return
+
         AllUdeTyps = [
             NXOpen.UF.Ude.SetType.ValueOf(0),
             NXOpen.UF.Ude.SetType.ValueOf(1),
             NXOpen.UF.Ude.SetType.ValueOf(3),
-        ]
-        AllViews = [
-            self.workPart.CAMSetup.GetRoot(
-                NXOpen.CAM.CAMSetup.View.ProgramOrder),
-            self.workPart.CAMSetup.GetRoot(
-                NXOpen.CAM.CAMSetup.View.MachineTool),
-            self.workPart.CAMSetup.GetRoot(
-                NXOpen.CAM.CAMSetup.View.MachineMethod),
-            self.workPart.CAMSetup.GetRoot(NXOpen.CAM.CAMSetup.View.Geometry),
         ]
 
         for UdeType in AllUdeTyps:
@@ -47,11 +80,13 @@ class DelAllUde:
                 objects_in_view = NXOpen.CAM.NCGroup.GetMembers(View)
                 self.pars_view(objects_in_view, UdeType)
 
-    def deleteude(self, tagged: NXOpen.CAM.Operation, UdeType):
+    def deleteude(self, tagged: NXOpen.CAM, UdeType):
+        #Here i want display the UDE NAME
         self.theUfSession.Param.DeleteAllUdes(tagged.Tag, UdeType)
 
     def pars_view(self, view, UdeType):
         for tagged in view:
+            lw(type(tagged))
             if not tagged == "NONE":
                 if self.workPart.CAMSetup.IsGroup(tagged):
                     group = NXOpen.CAM.NCGroup.GetMembers(tagged)
@@ -63,10 +98,11 @@ class DelAllUde:
 
 if __name__ == "__main__":
     config_file = Path(__file__).parent
-
     with open(f"{config_file}/config.json", "r") as f:
         config = json.load(f)
         versions = config["del_all_ude"]
-        if Checks.check_nx_version(int(versions["version_max"]), int(versions["version_min"])):
+        if Checks.check_nx_version(
+            int(versions["version_max"]), int(versions["version_min"])
+        ):
             instance = DelAllUde()
             instance.main()

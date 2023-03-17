@@ -3,6 +3,7 @@ from datetime import datetime
 
 import NXOpen
 import NXOpen.UF
+import NXOpen.CAM
 from locale.language_package import Core
 from utils.basic import BasicFunctions as BF
 from locale.language_package import Core
