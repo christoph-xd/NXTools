@@ -20,6 +20,7 @@ class DelAllUde:
         self.theUfSession = NXOpen.UF.UFSession.GetUFSession()
         self.workPart = self.theSession.Parts.Work
         self.theUI = NXOpen.UI.GetUI()
+        
 
     def main(self):
         AllViews = []
@@ -74,19 +75,33 @@ class DelAllUde:
             NXOpen.UF.Ude.SetType.ValueOf(1),
             NXOpen.UF.Ude.SetType.ValueOf(3),
         ]
-
+        BF.set_undo_mark("Delete all UDES's", self.theSession)
         for UdeType in AllUdeTyps:
             for View in AllViews:
                 objects_in_view = NXOpen.CAM.NCGroup.GetMembers(View)
                 self.pars_view(objects_in_view, UdeType)
 
-    def deleteude(self, tagged: NXOpen.CAM, UdeType):
-        #Here i want display the UDE NAME
+    def deleteude(self, tagged: NXOpen.CAM.Operation, UdeType):
+        obj: list = [tagged]
+        theObjectsUdeSet = self.workPart.CAMSetup.CreateObjectsUdeSet(
+            obj, NXOpen.CAM.CAMSetup.Ude.Start
+        )
+        
+        
+        if not len(theObjectsUdeSet.UdeSet.UdeList.GetContents()) == 0:
+            lw("*****************************************************")
+            if self.workPart.CAMSetup.IsGroup(tagged):
+                lw(f"Group Name: {tagged.Name}")
+            if self.workPart.CAMSetup.IsOperation(tagged):
+                lw(f"Operation Name: {tagged.Name}") 
+            
+            for ude in theObjectsUdeSet.UdeSet.UdeList.GetContents():
+                    lw(f"UDE Name: {ude.UdeName}")
+        
         self.theUfSession.Param.DeleteAllUdes(tagged.Tag, UdeType)
 
     def pars_view(self, view, UdeType):
         for tagged in view:
-            lw(type(tagged))
             if not tagged == "NONE":
                 if self.workPart.CAMSetup.IsGroup(tagged):
                     group = NXOpen.CAM.NCGroup.GetMembers(tagged)

@@ -1,6 +1,9 @@
 import NXOpen
 
 class BasicFunctions():
+    
+    def set_undo_mark(text:str, theSession:NXOpen.Session):
+        theSession.SetUndoMark(NXOpen.Session.MarkVisibility.Visible, text)
 
     def get_language():
         lang = "EN"
