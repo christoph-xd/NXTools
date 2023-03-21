@@ -37,35 +37,35 @@ class DeleteAllUDE:
     }
     AskDelProgrammViewHeader = {
         "EN": "Delete UDE Program View",
-        "DE": "UDE in Programm View löschen"
+        "DE": "UDE in Programm View löschen",
     }
-    AskDelProgrammView={
-        "EN":"You want delete all UDE's in the Programm View?",
-        "DE": "Willst du alle UDE's in der Programm View löschen?"
+    AskDelProgrammView = {
+        "EN": "You want delete all UDE's in the Programm View?",
+        "DE": "Willst du alle UDE's in der Programm View löschen?",
     }
     AskDelToolViewHeader = {
         "EN": "Delete UDE Tool View",
-        "DE": "UDE in Tool View löschen"
+        "DE": "UDE in Tool View löschen",
     }
-    AskDelToolView={
-        "EN":"You want delete all UDE's in the Tool View?",
-        "DE": "Willst du alle UDE's in der Tool View löschen?"
+    AskDelToolView = {
+        "EN": "You want delete all UDE's in the Tool View?",
+        "DE": "Willst du alle UDE's in der Tool View löschen?",
     }
     AskDelGeoViewHeader = {
         "EN": "Delete UDE Geometry View",
-        "DE": "UDE in Geometry View löschen"
+        "DE": "UDE in Geometry View löschen",
     }
-    AskDelGeoView={
-        "EN":"You want delete all UDE's in the Geometry View?",
-        "DE": "Willst du alle UDE's in der Geometry View löschen?"
+    AskDelGeoView = {
+        "EN": "You want delete all UDE's in the Geometry View?",
+        "DE": "Willst du alle UDE's in der Geometry View löschen?",
     }
     AskDelMethodViewHeader = {
         "EN": "Delete UDE Method View",
-        "DE": "UDE in Method View löschen"
+        "DE": "UDE in Method View löschen",
     }
-    AskDelMethodView={
-        "EN":"You want delete all UDE's in the Method View?",
-        "DE": "Willst du alle UDE's in der Method View löschen?"
+    AskDelMethodView = {
+        "EN": "You want delete all UDE's in the Method View?",
+        "DE": "Willst du alle UDE's in der Method View löschen?",
     }
 
 
@@ -94,3 +94,25 @@ class CreateToolpathGeo:
 
 class CreateAxisFromToolpath:
     ...
+
+
+class ReportCuttingLengthLocale:
+    operationName = {"EN": "Operation Name", "DE": "Operations Name"}
+    toolName = {"EN": "Tool Name", "DE": "Werkzeug Name"}
+    lengthCut = {"EN": "G1 Length / Time", "DE": "G1 Länge / Zeit"}
+    lengthRapid = {"EN": "G0 Length / Time", "DE": "G0 Länge / Zeit"}
+    selectONT = {
+        "EN": "One Object must be Selected in the ONT.",
+        "DE": "Es muss eine Operation im ONT ausgewählt werden.",
+    }
+
+
+class ReportCSETimeLocale:
+    ...
+
+
+class RenumberToolLocale:
+    undoMark = {
+        "EN": "Renumbering the Tool's",
+        "DE": "Neu nummerierung der Werkzeuge"
+    }

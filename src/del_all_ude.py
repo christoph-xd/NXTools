@@ -12,7 +12,7 @@ from utils.basic import BasicFunctions as BF
 from locale.language_package import DeleteAllUDE as Text
 import json
 from pathlib import Path
-
+from locale.ude_package import UdeName
 
 class DelAllUde:
     def __init__(self) -> None:
@@ -20,7 +20,7 @@ class DelAllUde:
         self.theUfSession = NXOpen.UF.UFSession.GetUFSession()
         self.workPart = self.theSession.Parts.Work
         self.theUI = NXOpen.UI.GetUI()
-        
+
 
     def main(self):
         AllViews = []
@@ -96,7 +96,8 @@ class DelAllUde:
                 lw(f"Operation Name: {tagged.Name}") 
             
             for ude in theObjectsUdeSet.UdeSet.UdeList.GetContents():
-                    lw(f"UDE Name: {ude.UdeName}")
+                    udeName = UdeName.get_ude_name(ude.UdeName)
+                    lw(f"UDE Name: {udeName}")
         
         self.theUfSession.Param.DeleteAllUdes(tagged.Tag, UdeType)
 
