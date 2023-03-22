@@ -25,9 +25,11 @@ class DelAllUde:
         
         self.thedel_ude = None
         try:
-            self.thedel_ude =  DelUdeUi.del_ude(self.workPart)
+            self.thedel_ude =  DelUdeUi.del_ude()
             self.thedel_ude.Show()
-            self.views = self.thedel_ude.ONTViews
+            self.views = self.thedel_ude.views
+            lw("hier")
+            lw(len(self.views))
         except Exception as ex:
             NXOpen.UI.GetUI().NXMessageBox.Show("Block Styler", NXOpen.NXMessageBox.DialogType.Error, str(ex))
         finally:

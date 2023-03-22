@@ -23,7 +23,6 @@ import NXOpen
 import NXOpen.BlockStyler
 import os
 from pathlib import Path
-from utils import lw
 
 #------------------------------------------------------------------------------
 # Represents Block Styler application cls
@@ -36,7 +35,7 @@ class del_ude:
     #------------------------------------------------------------------------------
     # Constructor for NX Styler class
     #------------------------------------------------------------------------------
-    def __init__(self, workPart):
+    def __init__(self):
         try:
             self.theSession = NXOpen.Session.GetSession()
             self.theUI = NXOpen.UI.GetUI()
@@ -48,8 +47,7 @@ class del_ude:
             self.theDialog.AddInitializeHandler(self.initialize_cb)
             self.theDialog.AddDialogShownHandler(self.dialogShown_cb)
             
-            self.workPart = workPart
-            self.views = []
+            self.views = {}
         except Exception as ex:
             raise ex
         
@@ -105,20 +103,19 @@ class del_ude:
         try:
             if block == self.pow_tg:
                 # ---- Enter your code here -----
-                lw(self.pow_tg.Value)
-                self.views.append(self.workPart.CAMSetup.GetRoot(NXOpen.CAM.CAMSetup.View.ProgramOrder))
+                self.views["pow"] = self.pow_tg.Value
                 pass
             elif block == self.mtv_tg:
                 # ---- Enter your code here -----
-                self.views.append(self.workPart.CAMSetup.GetRoot(NXOpen.CAM.CAMSetup.View.MachineTool))
+                self.views["mtv"] = self.mtv_tg.Value
                 pass
             elif block == self.gw_tg:
                 # ---- Enter your code here -----
-                self.views.append(self.workPart.CAMSetup.GetRoot(NXOpen.CAM.CAMSetup.View.Geometry))
+                self.views["gw"] = self.gw_tg.Value
                 pass
             elif block == self.mmv_tg:
                 # ---- Enter your code here -----
-                self.views.append(self.workPart.CAMSetup.GetRoot(NXOpen.CAM.CAMSetup.View.MachineMethod))
+                self.views["mmv"] = self.mmv_tg.Value
                 pass
         except Exception as ex:
             self.theUI.NXMessageBox.Show("Block Styler", NXOpen.NXMessageBox.DialogType.Error, str(ex))
@@ -131,7 +128,6 @@ class del_ude:
     def ok_cb(self):
         errorCode = 0
         try:
-            self.ONTViews = self.views
             pass
         except Exception as ex:
             errorCode = 1
