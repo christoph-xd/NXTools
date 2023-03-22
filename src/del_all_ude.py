@@ -14,6 +14,8 @@ import json
 from pathlib import Path
 from locale.ude_package import UdeName
 from ui import DelUdeUi
+import sys
+
 
 class DelAllUde:
     def __init__(self) -> None:
@@ -21,22 +23,29 @@ class DelAllUde:
         self.theUfSession = NXOpen.UF.UFSession.GetUFSession()
         self.workPart = self.theSession.Parts.Work
         self.theUI = NXOpen.UI.GetUI()
-        
-        
+
+        self.checkWork = True
+        self.checkSetup = True
+
+        if not Checks.check_workpart(self.workPart):
+            self.checkWork = False
+        if not Checks.check_setup():
+            self.checkSetup = False
+
+    def open_ui(self):
         self.thedel_ude = None
         try:
-            self.thedel_ude =  DelUdeUi.del_ude()
+            self.thedel_ude = DelUdeUi.del_ude()
             self.thedel_ude.Show()
             self.views = self.thedel_ude.views
-            lw("hier")
-            lw(len(self.views))
         except Exception as ex:
-            NXOpen.UI.GetUI().NXMessageBox.Show("Block Styler", NXOpen.NXMessageBox.DialogType.Error, str(ex))
+            NXOpen.UI.GetUI().NXMessageBox.Show(
+                "Block Styler", NXOpen.NXMessageBox.DialogType.Error, str(ex))
         finally:
             if self.thedel_ude != None:
                 self.thedel_ude.Dispose()
                 self.thedel_ude = None
-        
+
     def main(self):
         # AllViews = []
         # if not Checks.check_workpart(self.workPart):
@@ -101,19 +110,18 @@ class DelAllUde:
         theObjectsUdeSet = self.workPart.CAMSetup.CreateObjectsUdeSet(
             obj, NXOpen.CAM.CAMSetup.Ude.Start
         )
-        
-        
+
         if not len(theObjectsUdeSet.UdeSet.UdeList.GetContents()) == 0:
             lw("*****************************************************")
             if self.workPart.CAMSetup.IsGroup(tagged):
                 lw(f"Group Name: {tagged.Name}")
             if self.workPart.CAMSetup.IsOperation(tagged):
-                lw(f"Operation Name: {tagged.Name}") 
-            
+                lw(f"Operation Name: {tagged.Name}")
+
             for ude in theObjectsUdeSet.UdeSet.UdeList.GetContents():
-                    udeName = UdeName.get_ude_name(ude.UdeName)
-                    lw(f"UDE Name: {udeName}")
-        
+                udeName = UdeName.get_ude_name(ude.UdeName)
+                lw(f"UDE Name: {udeName}")
+
         self.theUfSession.Param.DeleteAllUdes(tagged.Tag, UdeType)
 
     def pars_view(self, view, UdeType):
