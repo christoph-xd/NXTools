@@ -13,6 +13,7 @@ from locale.language_package import DeleteAllUDE as Text
 import json
 from pathlib import Path
 from locale.ude_package import UdeName
+from ui import DelUdeUi
 
 class DelAllUde:
     def __init__(self) -> None:
@@ -20,53 +21,65 @@ class DelAllUde:
         self.theUfSession = NXOpen.UF.UFSession.GetUFSession()
         self.workPart = self.theSession.Parts.Work
         self.theUI = NXOpen.UI.GetUI()
-
-
+        
+        
+        self.thedel_ude = None
+        try:
+            self.thedel_ude =  DelUdeUi.del_ude(self.workPart)
+            self.thedel_ude.Show()
+            self.views = self.thedel_ude.ONTViews
+        except Exception as ex:
+            NXOpen.UI.GetUI().NXMessageBox.Show("Block Styler", NXOpen.NXMessageBox.DialogType.Error, str(ex))
+        finally:
+            if self.thedel_ude != None:
+                self.thedel_ude.Dispose()
+                self.thedel_ude = None
+        
     def main(self):
-        AllViews = []
-        if not Checks.check_workpart(self.workPart):
-            return
-        if not Checks.check_setup():
-            return
+        # AllViews = []
+        # if not Checks.check_workpart(self.workPart):
+        #     return
+        # if not Checks.check_setup():
+        #     return
 
-        response = UI.ask_yes_no(
-            BF.get_text(Text.AskDelProgrammViewHeader),
-            [BF.get_text(Text.AskDelProgrammView)],
-        )
-        if response == 1:
-            AllViews.append(
-                self.workPart.CAMSetup.GetRoot(NXOpen.CAM.CAMSetup.View.ProgramOrder)
-            )
+        # response = UI.ask_yes_no(
+        #     BF.get_text(Text.AskDelProgrammViewHeader),
+        #     [BF.get_text(Text.AskDelProgrammView)],
+        # )
+        # if response == 1:
+        #     AllViews.append(
+        #         self.workPart.CAMSetup.GetRoot(NXOpen.CAM.CAMSetup.View.ProgramOrder)
+        #     )
 
-        response = UI.ask_yes_no(
-            BF.get_text(Text.AskDelToolViewHeader),
-            [BF.get_text(Text.AskDelToolView)],
-        )
-        if response == 1:
-            AllViews.append(
-                self.workPart.CAMSetup.GetRoot(NXOpen.CAM.CAMSetup.View.MachineTool)
-            )
+        # response = UI.ask_yes_no(
+        #     BF.get_text(Text.AskDelToolViewHeader),
+        #     [BF.get_text(Text.AskDelToolView)],
+        # )
+        # if response == 1:
+        #     AllViews.append(
+        #         self.workPart.CAMSetup.GetRoot(NXOpen.CAM.CAMSetup.View.MachineTool)
+        #     )
 
-        response = UI.ask_yes_no(
-            BF.get_text(Text.AskDelGeoViewHeader),
-            [BF.get_text(Text.AskDelGeoView)],
-        )
-        if response == 1:
-            AllViews.append(
-                self.workPart.CAMSetup.GetRoot(NXOpen.CAM.CAMSetup.View.Geometry)
-            )
+        # response = UI.ask_yes_no(
+        #     BF.get_text(Text.AskDelGeoViewHeader),
+        #     [BF.get_text(Text.AskDelGeoView)],
+        # )
+        # if response == 1:
+        #     AllViews.append(
+        #         self.workPart.CAMSetup.GetRoot(NXOpen.CAM.CAMSetup.View.Geometry)
+        #     )
 
-        response = UI.ask_yes_no(
-            BF.get_text(Text.AskDelMethodViewHeader),
-            [BF.get_text(Text.AskDelMethodView)],
-        )
+        # response = UI.ask_yes_no(
+        #     BF.get_text(Text.AskDelMethodViewHeader),
+        #     [BF.get_text(Text.AskDelMethodView)],
+        # )
 
-        if response == 1:
-            AllViews.append(
-                self.workPart.CAMSetup.GetRoot(NXOpen.CAM.CAMSetup.View.MachineMethod)
-            )
+        # if response == 1:
+        #     AllViews.append(
+        #         self.workPart.CAMSetup.GetRoot(NXOpen.CAM.CAMSetup.View.MachineMethod)
+        #     )
 
-        if len(AllViews) == 0:
+        if len(self.views) == 0:
             UI.user_abort()
             return
 
@@ -77,7 +90,7 @@ class DelAllUde:
         ]
         BF.set_undo_mark("Delete all UDES's", self.theSession)
         for UdeType in AllUdeTyps:
-            for View in AllViews:
+            for View in self.views:
                 objects_in_view = NXOpen.CAM.NCGroup.GetMembers(View)
                 self.pars_view(objects_in_view, UdeType)
 

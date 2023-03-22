@@ -185,7 +185,9 @@ class CreateGeometry:
 
         if operationCollection == None:
             return
-
+        
+        BF.set_undo_mark("Text", self.theSession)
+        
         for _, operation in enumerate(operationCollection):
             operation: NXOpen.CAM.Operation = operation
             operationName = operation.Name

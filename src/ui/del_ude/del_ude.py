@@ -9,7 +9,7 @@
 #         Created by: brandauc
 #               Version: NX 2008
 #               Date: 03-22-2023  (Format: mm-dd-yyyy)
-#               Time: 15:08 (Format: hh-mm)
+#               Time: 15:28 (Format: hh-mm)
 # 
 #==============================================================================
 
@@ -23,6 +23,7 @@ import NXOpen
 import NXOpen.BlockStyler
 import os
 from pathlib import Path
+from utils import lw
 
 #------------------------------------------------------------------------------
 # Represents Block Styler application cls
@@ -104,6 +105,7 @@ class del_ude:
         try:
             if block == self.pow_tg:
                 # ---- Enter your code here -----
+                lw(self.pow_tg.Value)
                 self.views.append(self.workPart.CAMSetup.GetRoot(NXOpen.CAM.CAMSetup.View.ProgramOrder))
                 pass
             elif block == self.mtv_tg:

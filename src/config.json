@@ -22,5 +22,9 @@
     "del_all_ude": {
         "version_max": "2212",
         "version_min": "2007"
+    },
+    "renumber_tools":{
+        "version_max": "2212",
+        "version_min": "2007"
     }
 }
