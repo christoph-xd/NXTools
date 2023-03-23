@@ -9,7 +9,7 @@
 #         Created by: brandauc
 #               Version: NX 2008
 #               Date: 03-23-2023  (Format: mm-dd-yyyy)
-#               Time: 12:06 (Format: hh-mm)
+#               Time: 12:42 (Format: hh-mm)
 # 
 #==============================================================================
 
@@ -35,9 +35,11 @@
 # These imports are needed for the following template code
 #------------------------------------------------------------------------------
 import NXOpen
+import NXOpen.UF
 import NXOpen.BlockStyler
 import os
 from pathlib import Path
+from utils import BasicFunctions as BF
 
 #------------------------------------------------------------------------------
 # Represents Block Styler application cls
@@ -59,6 +61,7 @@ class main_ui:
     ):
         try:
             self.theSession = NXOpen.Session.GetSession()
+            self.theUfSession = NXOpen.UF.UFSession.GetUFSession()
             self.theUI = NXOpen.UI.GetUI()
             self.theDlxFileName = os.path.join(Path(__file__).parent, "main_ui.dlx")
             self.theDialog = self.theUI.CreateDialog(self.theDlxFileName)
@@ -159,6 +162,7 @@ class main_ui:
         try:
             if block == self.numberTools_btn:
                 # ---- Enter your code here -----
+                BF.set_uf_undo_mark(self.theUfSession)
                 self.renumber()
                 pass
             elif block == self.tpGeo_btn:
@@ -171,6 +175,7 @@ class main_ui:
                 pass
             elif block == self.createpv_btn:
                 # ---- Enter your code here -----
+                BF.set_undo_mark("VECTOR", self.theSession)
                 self.tool_vec_point()
                 pass
         except Exception as ex:

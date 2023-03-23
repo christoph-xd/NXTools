@@ -17,6 +17,15 @@ class CreateGeometry:
         self.unit = self.workPart.UnitCollection.FindObject("MilliMeter")
         self.flagFirstMotion = True
         self.flagLastMotion = True
+        
+        
+        self.checkWork = True
+        self.checkSetup = True
+        if not Checks.check_workpart(self.workPart):
+            self.checkWork = False
+
+        if not Checks.check_setup():
+            self.checkSetup = False
 
     def calculate_endpoint(
         self, point: NXOpen.Point3d, vector: NXOpen.Vector3d
@@ -110,20 +119,21 @@ class CreateGeometry:
 
     def selected_operation(self) -> list:
         operationCollection = []
-        num = self.theUI.SelectionManager.GetNumSelectedObjects()
-        objects1 = [NXOpen.CAM.CAMObject.Null] * num
-
-        if num != 1:
+        
+        count, toolTag = self.theUfSession.UiOnt.AskSelectedNodes()
+        
+        if count != 1:
             self.theUI.NXMessageBox.Show(
                 BF.get_text(CTG.ErrorSelectHeader),
                 NXOpen.NXMessageBox.DialogType.Error,
                 BF.get_text(CTG.ErrorSelect),
             )
             return None
-        selected = self.theUI.SelectionManager.GetSelectedTaggedObject
+        objects1 = [NXOpen.CAM.CAMObject.Null] * count
+       
 
-        for i in range(num):
-            objects1[i] = selected(i)
+        for i in range(count):
+            objects1[i] = NXOpen.TaggedObjectManager.GetTaggedObject(toolTag[i])
             if self.workPart.CAMSetup.IsOperation(objects1[i]):
                 operationCollection.append(objects1[i])
             else:
@@ -174,7 +184,6 @@ class CreateGeometry:
         return endpoint, arcCenter, arcRadius, direction
 
     def main(self):
-        # lw(Getters.get_lang(self.theSession))
         if not Checks.check_workpart(self.workPart):
             return
 
@@ -185,8 +194,6 @@ class CreateGeometry:
 
         if operationCollection == None:
             return
-        
-        BF.set_undo_mark("Text", self.theSession)
         
         for _, operation in enumerate(operationCollection):
             operation: NXOpen.CAM.Operation = operation

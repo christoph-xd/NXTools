@@ -17,6 +17,14 @@ class CreateAxis:
         self.flagFirstMotion = False
         self.flagLastMotion = False
 
+        self.checkWork = True
+        self.checkSetup = True
+        if not Checks.check_workpart(self.workPart):
+            self.checkWork = False
+
+        if not Checks.check_setup():
+            self.checkSetup = False
+
     def calculate_endpoint(
         self, point: NXOpen.Point3d, vector: NXOpen.Vector3d
     ) -> NXOpen.Point3d:
@@ -68,24 +76,18 @@ class CreateAxis:
             self.circular_motion(path, toolPathEvent)
 
     def create_axis(self):
-        if not Checks.check_workpart(self.workPart):
-            return
+        count, toolTag = self.theUfSession.UiOnt.AskSelectedNodes()
+        objects1 = [NXOpen.CAM.CAMObject.Null] * count
 
-        if not Checks.check_setup():
-            return
-
-        num = self.theUI.SelectionManager.GetNumSelectedObjects()
-        objects1 = [NXOpen.CAM.CAMObject.Null] * num
-
-        if num == 0:
+        if count == 0:
             self.theUI.NXMessageBox.Show(
                 "Select Operation",
                 NXOpen.NXMessageBox.DialogType.Error,
                 "No Operation was selected!",
             )
-        selected = self.theUI.SelectionManager.GetSelectedTaggedObject
-        for i in range(num):
-            objects1[i] = selected(i)
+        
+        for i in range(count):
+            objects1[i] = NXOpen.TaggedObjectManager.GetTaggedObject(toolTag[i])
             object: NXOpen.CAM.Operation = objects1[i]
             path: NXOpen.CAM.Path = object.GetPath()
             numberOfToolpathEvents: int = path.NumberOfToolpathEvents
@@ -305,9 +307,11 @@ class CreateAxis:
 
 if __name__ == "__main__":
     config_file = Path(__file__).parent
-    with open(f'{config_file}/config.json', 'r') as f:
+    with open(f"{config_file}/config.json", "r") as f:
         config = json.load(f)
-        versions = config['report_cutting_length']
-    if Checks.check_nx_version(int(versions['version_max']), int(versions['version_min'])):
+        versions = config["report_cutting_length"]
+    if Checks.check_nx_version(
+        int(versions["version_max"]), int(versions["version_min"])
+    ):
         inistance = CreateAxis()
         inistance.create_axis()
