@@ -40,13 +40,14 @@ import NXOpen.BlockStyler
 import os
 from pathlib import Path
 from utils import BasicFunctions as BF
+from utils import lw
 
 #------------------------------------------------------------------------------
 # Represents Block Styler application cls
 #------------------------------------------------------------------------------
 class main_ui:
     # static class members
-    theSession = None
+    #theSession = None
     theUI = None
     
     #------------------------------------------------------------------------------
@@ -162,7 +163,6 @@ class main_ui:
         try:
             if block == self.numberTools_btn:
                 # ---- Enter your code here -----
-                BF.set_uf_undo_mark(self.theUfSession)
                 self.renumber()
                 pass
             elif block == self.tpGeo_btn:
@@ -175,7 +175,6 @@ class main_ui:
                 pass
             elif block == self.createpv_btn:
                 # ---- Enter your code here -----
-                BF.set_undo_mark("VECTOR", self.theSession)
                 self.tool_vec_point()
                 pass
         except Exception as ex:
