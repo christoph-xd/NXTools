@@ -49,6 +49,10 @@ class DelAllUde:
 
     def main(self):
         self.open_ui()
+        if self.views == None:
+            UI.user_abort()
+            return
+        
         AllViews = []
         if self.views["pow"]:
             AllViews.append(

@@ -33,7 +33,6 @@ class RenumberTool:
         if self.toolNumber == None:
             UI.user_abort()
             return
-        BF.set_undo_mark(BF.get_text(Text.undoMark), self.theSession)
         for item in self.workPart.CAMSetup.CAMGroupCollection:
             if type(item) == NXOpen.CAM.Tool:
                 self.theUfSession.Param.SetIntValue(item.Tag, 1038, self.toolNumber)

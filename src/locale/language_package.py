@@ -112,7 +112,20 @@ class ReportCSETimeLocale:
 
 
 class RenumberToolLocale:
-    undoMark = {
-        "EN": "Renumbering the Tool's",
-        "DE": "Neu nummerierung der Werkzeuge"
+    undoMark = {"EN": "Renumbering the Tool's", "DE": "Neu nummerierung der Werkzeuge"}
+
+
+class MainUILocale:
+    tpReportLength = {
+        "EN": "Reports the G1 and G0 Lenght from the selected Operations.",
+        "DE": "Reportet die G1 und G0 Länge der ausgewählten Operationen.",
+    }
+    labelTPtoLines = {
+        "EN": "Creates Lines from the selected ToolPath",
+        "DE": "Erzeugt Kurven vom Werkzeugweg"
+    }
+    labelDelUde = {"EN": "Delete all UDE's", "DE": "Alle UDE's Löschen"}
+    labelPointVector = {
+        "EN": "Create Point and Vector",
+        "DE": "Erstellt einen Punkt und Vektor",
     }

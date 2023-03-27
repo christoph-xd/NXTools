@@ -11,7 +11,9 @@ from utils import Checks, Getters, lw
 class ReportCuttingLength:
     def __init__(self, isDebug: bool) -> None:
         self.theSession = NXOpen.Session.GetSession()
+        self.theUfSession = NXOpen.UF.UFSession.GetUFSession()
         self.theUI = NXOpen.UI.GetUI()
+        self.workPart = self.theSession.Parts.Work
         self.isDebug = isDebug
 
         if self.isDebug:
@@ -20,23 +22,23 @@ class ReportCuttingLength:
                 NXOpen.NXMessageBox.DialogType.Information,
                 str("The Debug Mode is switched one!"),
             )
+        self.checkWork = True
+        self.checkSetup = True
+
+        if not Checks.check_workpart(self.workPart):
+            self.checkWork = False
+        if not Checks.check_setup():
+            self.checkSetup = False
 
     def main(self):
-        workPart = self.theSession.Parts.Work
+        count, toolTag = self.theUfSession.UiOnt.AskSelectedNodes()
 
         if self.isDebug:
-            lw(type(workPart))
+            lw(type(self.workPart))
 
-        if not Checks.check_workpart(workPart):
-            return
+        objects1 = [NXOpen.CAM.CAMObject.Null] * count
 
-        if not Checks.check_setup():
-            return
-
-        num = self.theUI.SelectionManager.GetNumSelectedObjects()
-        objects1 = [NXOpen.CAM.CAMObject.Null] * num
-
-        if num == 0:
+        if count == 0:
             self.theUI.NXMessageBox.Show(
                 "Object",
                 NXOpen.NXMessageBox.DialogType.Information,
@@ -44,18 +46,18 @@ class ReportCuttingLength:
             )
             return
 
-        unit = Getters.get_base_unit(workPart)
+        unit = Getters.get_base_unit(self.workPart)
 
-        for i in range(num):
+        for i in range(count):
             if self.isDebug:
                 lw(objects1)
-            objects1[i] = self.theUI.SelectionManager.GetSelectedTaggedObject(i)
+            objects1[i] = NXOpen.TaggedObjectManager.GetTaggedObject(toolTag[i])
             object = objects1[i]
 
             if self.isDebug:
                 lw(type(object))
 
-            if workPart.CAMSetup.IsOperation(object):
+            if self.workPart.CAMSetup.IsOperation(object):
                 tool_info = Getters.get_tool_information(object)
                 if self.isDebug:
                     lw(tool_info)

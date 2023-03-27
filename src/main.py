@@ -6,16 +6,17 @@ from modules.renumber_tools import RenumberTool
 from modules.create_toolpath_geo import CreateGeometry
 from modules.del_all_ude import DelAllUde
 from modules.axis_toolpath import CreateAxis
+from modules.report_cutting_lenght import ReportCuttingLength
 from pathlib import Path
 from utils import Checks
 
 theSession = NXOpen.Session.GetSession()
-
+isDebug = False
 
 def main():
     themain_ui = None
     try:
-        themain_ui = MainUi.main_ui(renumber_tool, tp_geo, del_ude, tool_vector_point)
+        themain_ui = MainUi.main_ui(renumber_tool, tp_geo, del_ude, tool_vector_point, report_length)
         #  The following method shows the dialog immediately
         themain_ui.Show()
     except Exception as ex:
@@ -78,6 +79,18 @@ def tool_vector_point():
         instance = CreateAxis()
         if instance.checkSetup and instance.checkWork:
             instance.create_axis()
+            
+def report_length():
+    config_file = Path(__file__).parent
+    with open(f"{config_file}/config.json", "r") as f:
+        config = json.load(f)
+        versions = config["report_cutting_length"]
+    if Checks.check_nx_version(
+        int(versions["version_max"]), int(versions["version_min"])
+    ):
+        instance = ReportCuttingLength(isDebug)
+        if instance.checkSetup and instance.checkWork:
+            instance.main()
 
 
 if __name__ == "__main__":

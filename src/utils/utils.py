@@ -235,7 +235,6 @@ class Checks:
         Returns:
             bool: True for a Setup Exist in the WorkPart
         """
-        cls.theUfSession.Cam.InitSession()
         setupTag = cls.theUfSession.Setup.AskSetup()
         if setupTag == 0:
             cls.theUI.NXMessageBox.Show(

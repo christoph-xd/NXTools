@@ -24,7 +24,6 @@ import NXOpen.BlockStyler
 import os
 from pathlib import Path
 
-
 # ------------------------------------------------------------------------------
 # Represents Block Styler application cls
 # ------------------------------------------------------------------------------
@@ -146,6 +145,7 @@ class del_ude:
     def cancel_cb(self):
         errorCode = 0
         try:
+            self.views = None
             pass
         except Exception as ex:
             errorCode = 1
