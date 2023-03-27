@@ -80,7 +80,6 @@ class DelAllUde:
             NXOpen.UF.Ude.SetType.ValueOf(1),
             NXOpen.UF.Ude.SetType.ValueOf(3),
         ]
-        BF.set_undo_mark("Delete all UDES's", self.theSession)
         for UdeType in AllUdeTyps:
             for View in AllViews:
                 objects_in_view = NXOpen.CAM.NCGroup.GetMembers(View)
