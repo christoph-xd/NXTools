@@ -5,7 +5,8 @@ from pathlib import Path
 import NXOpen
 import NXOpen.CAM
 import NXOpen.UF
-
+from utils.basic import BasicFunctions as BF
+from locale.language_package import ReportCSETimeLocale as Text
 from utils import Checks, UI, lw
 
 
@@ -44,7 +45,7 @@ class ReportCSETime:
 
         if num == 0:
             message = [str] * 1
-            message[0] = "Ok to Calculate Machining Time?"
+            message[0] = BF.get_text(Text.askCalcTime)
             if UI.ask_yes_no("Calculate Machining Time", message) == 1:
                 self.workPart.CAMSetup.CalculateMachiningTimes()
 

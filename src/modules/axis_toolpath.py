@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 
 
+
 class CreateAxis:
     def __init__(self):
         self.theSession = NXOpen.Session.GetSession()
@@ -28,6 +29,15 @@ class CreateAxis:
     def calculate_endpoint(
         self, point: NXOpen.Point3d, vector: NXOpen.Vector3d
     ) -> NXOpen.Point3d:
+        """Calc the Endpoint by Vector and Startpoint
+
+        Args:
+            point (NXOpen.Point3d): Startpoint
+            vector (NXOpen.Vector3d): Tool Vector
+
+        Returns:
+            NXOpen.Point3d: Endpoint by a length of 5
+        """
         length = 5
         x = point.X + length * vector.X
         y = point.Y + length * vector.Y

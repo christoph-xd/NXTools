@@ -55,7 +55,6 @@ def tp_geo():
         if instance.checkSetup and instance.checkWork:
             instance.main()
 
-
 def del_ude():
     config_file = Path(__file__).parent
     with open(f"{config_file}/config.json", "r") as f:

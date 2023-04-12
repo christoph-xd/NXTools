@@ -108,7 +108,10 @@ class ReportCuttingLengthLocale:
 
 
 class ReportCSETimeLocale:
-    ...
+    askCalcTime = {
+        "EN":"You want Calculate Machining Time?",
+        "DE":"CSE Zeiten berechnen?"
+    }
 
 
 class RenumberToolLocale:
@@ -131,5 +134,9 @@ class MainUILocale:
     }
     labelReportCSETime = {
         "EN":"Report CSE Time",
-        "DE":"CSE Time Auflisten"
+        "DE":"CSE Time auflisten"
+    }
+    labelReportCutLength = {
+        "EN":"Report Cutting length",
+        "DE":"Werkzeugweg Länge auflisten"
     }

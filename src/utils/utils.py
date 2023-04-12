@@ -13,7 +13,7 @@ def lw(output: str):
     """
     Write a line in the NX Listing Window
     Args:
-        output   : The Output which will shown
+        output   : The Output which will shown in the NX Listing Window
     """
     theSession = NXOpen.Session.GetSession()
     if not theSession.ListingWindow.IsOpen:

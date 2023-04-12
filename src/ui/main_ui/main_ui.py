@@ -153,6 +153,7 @@ class main_ui:
             self.delUde_btn.Label = BF.get_text(Text.labelDelUde)
             self.createpv_btn.Label = BF.get_text(Text.labelPointVector)
             self.reportCSETime_btn.Label = BF.get_text(Text.labelReportCSETime)
+            self.reportLength_btn.Label = BF.get_text(Text.labelReportCutLength)
             
             #BallonToolTips
             self.reportLength_btn.BalloonTooltipText = BF.get_text(Text.tpReportLength)
