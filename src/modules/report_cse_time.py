@@ -23,6 +23,14 @@ class ReportCSETime:
                 NXOpen.NXMessageBox.DialogType.Information,
                 str("The Debug Mode is switched one!"),
             )
+            
+        self.checkWork = True
+        self.checkSetup = True
+
+        if not Checks.check_workpart(self.workPart):
+            self.checkWork = False
+        if not Checks.check_setup():
+            self.checkSetup = False
 
     def report_time(self):
         if not Checks.check_workpart(self.workPart):
@@ -81,7 +89,7 @@ class ReportCSETime:
 
     def parsing_opration(self, obj: NXOpen.CAM.Operation):
         for object in obj:
-            if isDebug:
+            if self.isDebug:
                 lw(type(object))
             if not object.Name == "NONE":
                 if self.workPart.CAMSetup.IsGroup(object):

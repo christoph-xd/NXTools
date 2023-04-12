@@ -7,6 +7,7 @@ from modules.create_toolpath_geo import CreateGeometry
 from modules.del_all_ude import DelAllUde
 from modules.axis_toolpath import CreateAxis
 from modules.report_cutting_lenght import ReportCuttingLength
+from modules.report_cse_time import ReportCSETime
 from pathlib import Path
 from utils import Checks
 
@@ -16,9 +17,9 @@ isDebug = False
 def main():
     themain_ui = None
     try:
-        themain_ui = MainUi.main_ui(renumber_tool, tp_geo, del_ude, tool_vector_point, report_length)
+        themain_ui = MainUi.main_ui(renumber_tool, tp_geo, del_ude, tool_vector_point, report_length, report_cse_time)
         #  The following method shows the dialog immediately
-        themain_ui.Show()
+        themain_ui.Launch()
     except Exception as ex:
         # ---- Enter your exception handling code here -----
         NXOpen.UI.GetUI().NXMessageBox.Show(
@@ -91,6 +92,18 @@ def report_length():
         instance = ReportCuttingLength(isDebug)
         if instance.checkSetup and instance.checkWork:
             instance.main()
+
+def report_cse_time():
+    config_file = Path(__file__).parent
+    with open(f"{config_file}/config.json", "r") as f:
+        config = json.load(f)
+        versions = config["report_cutting_length"]
+    if Checks.check_nx_version(
+        int(versions["version_max"]), int(versions["version_min"])
+    ):
+        instance = ReportCSETime(isDebug)
+        if instance.checkSetup and instance.checkWork:
+            instance.report_time()
 
 
 if __name__ == "__main__":
