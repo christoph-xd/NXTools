@@ -129,3 +129,7 @@ class MainUILocale:
         "EN": "Create Point and Vector",
         "DE": "Erstellt einen Punkt und Vektor",
     }
+    labelReportCSETime = {
+        "EN":"Report CSE Time",
+        "DE":"CSE Time Auflisten"
+    }

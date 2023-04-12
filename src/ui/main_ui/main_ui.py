@@ -152,6 +152,7 @@ class main_ui:
             self.tpGeo_btn.Label = BF.get_text(Text.labelTPtoLines)
             self.delUde_btn.Label = BF.get_text(Text.labelDelUde)
             self.createpv_btn.Label = BF.get_text(Text.labelPointVector)
+            self.reportCSETime_btn.Label = BF.get_text(Text.labelReportCSETime)
             
             #BallonToolTips
             self.reportLength_btn.BalloonTooltipText = BF.get_text(Text.tpReportLength)
