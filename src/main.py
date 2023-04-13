@@ -9,6 +9,7 @@ from modules.del_all_ude import DelAllUde
 from modules.renumber_tools import RenumberTool
 from modules.report_cse_time import ReportCSETime
 from modules.report_cutting_lenght import ReportCuttingLength
+from modules.delete_toolholder import DeleteHolder
 from ui import MainUi
 from utils import BasicFunctions as BF
 from utils import Checks
@@ -51,6 +52,11 @@ def renumber_tool():
     ):
         instance = RenumberTool()
         instance.main()
+
+
+def del_toolholder_dat():
+    instance = DeleteHolder()
+    instance.main()
 
 
 def tp_geo():
