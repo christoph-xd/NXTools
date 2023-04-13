@@ -1,10 +1,12 @@
 import json
+from locale.language_package import ReportCuttingLengthLocale as Text
 from pathlib import Path
+
 import NXOpen
 import NXOpen.CAM
 import NXOpen.Gateway
+
 from utils import BasicFunctions as BF
-from locale.language_package import ReportCuttingLengthLocale as Text
 from utils import Checks, Getters, lw
 
 

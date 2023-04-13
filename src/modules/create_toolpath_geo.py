@@ -1,11 +1,14 @@
-import math
 import json
+import math
+from locale.language_package import CreateToolpathGeo as CTG
+from pathlib import Path
+
 import NXOpen
 import NXOpen.CAM
-from utils import lw, Checks, UI, Getters
-from pathlib import Path
-from locale.language_package import CreateToolpathGeo as CTG
+
+from utils import UI
 from utils import BasicFunctions as BF
+from utils import Checks, Getters, lw
 
 
 class CreateGeometry:
@@ -17,8 +20,7 @@ class CreateGeometry:
         self.unit = self.workPart.UnitCollection.FindObject("MilliMeter")
         self.flagFirstMotion = True
         self.flagLastMotion = True
-        
-        
+
         self.checkWork = True
         self.checkSetup = True
         if not Checks.check_workpart(self.workPart):
@@ -72,8 +74,7 @@ class CreateGeometry:
         return NXOpen.Point3d(x, y, endpoint.Z)
 
     def create_group(self, lineTags: list, groupName: str):
-        groupBuilder = self.workPart.CreateGatewayGroupBuilder(
-            NXOpen.Group.Null)
+        groupBuilder = self.workPart.CreateGatewayGroupBuilder(NXOpen.Group.Null)
         groupBuilder.GroupName = groupName
         for lineTag in lineTags:
             obj = NXOpen.TaggedObjectManager.GetTaggedObject(lineTag)
@@ -110,8 +111,7 @@ class CreateGeometry:
         pointon = self.calculate_pointon(
             startpoint, centerpoint, endpoint, arcRadius, direction
         )
-        c = self.workPart.Curves.CreateArc(
-            startpoint, pointon, endpoint, False)
+        c = self.workPart.Curves.CreateArc(startpoint, pointon, endpoint, False)
         # c.SetVisibility(NXOpen.SmartObject.VisibilityOption.Visible)
 
     def create_uf_arc(self):
@@ -119,9 +119,9 @@ class CreateGeometry:
 
     def selected_operation(self) -> list:
         operationCollection = []
-        
+
         count, toolTag = self.theUfSession.UiOnt.AskSelectedNodes()
-        
+
         if count != 1:
             self.theUI.NXMessageBox.Show(
                 BF.get_text(CTG.ErrorSelectHeader),
@@ -130,7 +130,6 @@ class CreateGeometry:
             )
             return None
         objects1 = [NXOpen.CAM.CAMObject.Null] * count
-       
 
         for i in range(count):
             objects1[i] = NXOpen.TaggedObjectManager.GetTaggedObject(toolTag[i])
@@ -144,8 +143,7 @@ class CreateGeometry:
                 )
                 continue
             operationBuilder = (
-                self.workPart.CAMSetup.CAMOperationCollection.CreateBuilder(
-                    objects1[i])
+                self.workPart.CAMSetup.CAMOperationCollection.CreateBuilder(objects1[i])
             )
             if (
                 not operationBuilder.MotionOutputBuilder.OutputType
@@ -194,7 +192,7 @@ class CreateGeometry:
 
         if operationCollection == None:
             return
-        
+
         for _, operation in enumerate(operationCollection):
             operation: NXOpen.CAM.Operation = operation
             operationName = operation.Name
@@ -205,9 +203,7 @@ class CreateGeometry:
             if numberOfToolpathEvents > 10000:
                 response = UI.ask_yes_no(
                     BF.get_text(CTG.AskYesNoToolpathAmountHeader),
-                    [
-                        BF.get_text(CTG.AskYesNoToolpathAmount)
-                    ],
+                    [BF.get_text(CTG.AskYesNoToolpathAmount)],
                 )
 
                 if response == 2:
@@ -270,8 +266,7 @@ class CreateGeometry:
                             self.flagFirstMotion = False
                             startpoint = endpoint
                             continue
-                        lineTags.append(
-                            self.create_uf_line(startpoint, endpoint))
+                        lineTags.append(self.create_uf_line(startpoint, endpoint))
                         startpoint = endpoint
                     if (
                         camPathMotionShapeType

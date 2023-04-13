@@ -4,17 +4,19 @@
 #
 #   Written by: Chrsitoph Brandau
 ##############################################################################
-import NXOpen
-import NXOpen.UF
-import NXOpen.CAM
-from utils import UI, lw, Checks
-from utils.basic import BasicFunctions as BF
-from locale.language_package import DeleteAllUDE as Text
 import json
-from pathlib import Path
-from locale.ude_package import UdeName
-from ui import DelUdeUi
 import sys
+from locale.language_package import DeleteAllUDE as Text
+from locale.ude_package import UdeName
+from pathlib import Path
+
+import NXOpen
+import NXOpen.CAM
+import NXOpen.UF
+
+from ui import DelUdeUi
+from utils import UI, Checks, lw
+from utils.basic import BasicFunctions as BF
 
 
 class DelAllUde:
@@ -52,7 +54,7 @@ class DelAllUde:
         if self.views == None:
             UI.user_abort()
             return
-        
+
         AllViews = []
         if self.views["pow"]:
             AllViews.append(

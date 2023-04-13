@@ -1,6 +1,7 @@
-﻿import os
-import json
+﻿import json
+import os
 from pathlib import Path
+
 import NXOpen
 
 from utils import Checks
@@ -35,6 +36,8 @@ if __name__ == "__main__":
     with open(f"{config_file}/config.json", "r") as f:
         config = json.load(f)
         versions = config["open_workspace"]
-    if Checks.check_nx_version(int(versions["version_max"]), int(versions["version_min"])):
+    if Checks.check_nx_version(
+        int(versions["version_max"]), int(versions["version_min"])
+    ):
         instance = OpenWorkSpace(isDebug)
         instance.open()

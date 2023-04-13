@@ -1,11 +1,12 @@
-import math
 import json
-import NXOpen
-import NXOpen.CAM
-from utils import lw, Checks, UI
+import math
 import sys
 from pathlib import Path
 
+import NXOpen
+import NXOpen.CAM
+
+from utils import UI, Checks, lw
 
 
 class CreateAxis:
@@ -95,7 +96,7 @@ class CreateAxis:
                 NXOpen.NXMessageBox.DialogType.Error,
                 "No Operation was selected!",
             )
-        
+
         for i in range(count):
             objects1[i] = NXOpen.TaggedObjectManager.GetTaggedObject(toolTag[i])
             object: NXOpen.CAM.Operation = objects1[i]

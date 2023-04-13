@@ -1,23 +1,33 @@
 import json
+from pathlib import Path
+
 import NXOpen
-from ui import MainUi
-from utils import BasicFunctions as BF
-from modules.renumber_tools import RenumberTool
+
+from modules.axis_toolpath import CreateAxis
 from modules.create_toolpath_geo import CreateGeometry
 from modules.del_all_ude import DelAllUde
-from modules.axis_toolpath import CreateAxis
-from modules.report_cutting_lenght import ReportCuttingLength
+from modules.renumber_tools import RenumberTool
 from modules.report_cse_time import ReportCSETime
-from pathlib import Path
+from modules.report_cutting_lenght import ReportCuttingLength
+from ui import MainUi
+from utils import BasicFunctions as BF
 from utils import Checks
 
 theSession = NXOpen.Session.GetSession()
 isDebug = False
 
+
 def main():
     themain_ui = None
     try:
-        themain_ui = MainUi.main_ui(renumber_tool, tp_geo, del_ude, tool_vector_point, report_length, report_cse_time)
+        themain_ui = MainUi.main_ui(
+            renumber_tool,
+            tp_geo,
+            del_ude,
+            tool_vector_point,
+            report_length,
+            report_cse_time,
+        )
         #  The following method shows the dialog immediately
         themain_ui.Launch()
     except Exception as ex:
@@ -55,6 +65,7 @@ def tp_geo():
         if instance.checkSetup and instance.checkWork:
             instance.main()
 
+
 def del_ude():
     config_file = Path(__file__).parent
     with open(f"{config_file}/config.json", "r") as f:
@@ -79,7 +90,8 @@ def tool_vector_point():
         instance = CreateAxis()
         if instance.checkSetup and instance.checkWork:
             instance.create_axis()
-            
+
+
 def report_length():
     config_file = Path(__file__).parent
     with open(f"{config_file}/config.json", "r") as f:
@@ -91,6 +103,7 @@ def report_length():
         instance = ReportCuttingLength(isDebug)
         if instance.checkSetup and instance.checkWork:
             instance.main()
+
 
 def report_cse_time():
     config_file = Path(__file__).parent

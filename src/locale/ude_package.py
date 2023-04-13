@@ -42,7 +42,6 @@ class UdeName:
 
     @classmethod
     def get_ude_name(cls, event_name):
-
         if event_name in cls.udes:
             return cls.udes[event_name]
         return event_name

@@ -109,8 +109,8 @@ class ReportCuttingLengthLocale:
 
 class ReportCSETimeLocale:
     askCalcTime = {
-        "EN":"You want Calculate Machining Time?",
-        "DE":"CSE Zeiten berechnen?"
+        "EN": "You want Calculate Machining Time?",
+        "DE": "CSE Zeiten berechnen?",
     }
 
 
@@ -125,18 +125,15 @@ class MainUILocale:
     }
     labelTPtoLines = {
         "EN": "Creates Lines from the selected ToolPath",
-        "DE": "Erzeugt Kurven vom Werkzeugweg"
+        "DE": "Erzeugt Kurven vom Werkzeugweg",
     }
     labelDelUde = {"EN": "Delete all UDE's", "DE": "Alle UDE's Löschen"}
     labelPointVector = {
         "EN": "Create Point and Vector",
         "DE": "Erstellt einen Punkt und Vektor",
     }
-    labelReportCSETime = {
-        "EN":"Report CSE Time",
-        "DE":"CSE Time auflisten"
-    }
+    labelReportCSETime = {"EN": "Report CSE Time", "DE": "CSE Time auflisten"}
     labelReportCutLength = {
-        "EN":"Report Cutting length",
-        "DE":"Werkzeugweg Länge auflisten"
+        "EN": "Report Cutting length",
+        "DE": "Werkzeugweg Länge auflisten",
     }

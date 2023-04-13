@@ -1,11 +1,11 @@
 import NXOpen
+import NXOpen.UF
 
 
 class BasicFunctions:
-    def set_uf_undo_mark(theUfSession:NXOpen.UF.UFSession):
+    def set_uf_undo_mark(theUfSession: NXOpen.UF.UFSession):
         pass
-        
-        
+
     def set_undo_mark(text: str, theSession: NXOpen.Session):
         return theSession.SetUndoMark(NXOpen.Session.MarkVisibility.Visible, text)
 

@@ -1,12 +1,12 @@
 import base64
 from datetime import datetime
+from locale.language_package import Core
 
 import NXOpen
-import NXOpen.UF
 import NXOpen.CAM
-from locale.language_package import Core
+import NXOpen.UF
+
 from utils.basic import BasicFunctions as BF
-from locale.language_package import Core
 
 
 def lw(output: str):
@@ -26,7 +26,6 @@ def lw(output: str):
 
 
 class Getters:
-
     @classmethod
     def get_base_unit(cls, workPart: NXOpen.Part) -> str:
         """
@@ -69,8 +68,7 @@ class Getters:
             dict: _description_
         """
         g1_len = round(object.GetToolpathCuttingLength())
-        g0_len = round(object.GetToolpathLength() -
-                       object.GetToolpathCuttingLength())
+        g0_len = round(object.GetToolpathLength() - object.GetToolpathCuttingLength())
         g1_time = round(object.GetToolpathCuttingTime() * 60)
         g0_time = round(
             (object.GetToolpathTime() - object.GetToolpathCuttingTime()) * 60
@@ -139,8 +137,7 @@ class UI:
             cls.theUI.NXMessageBox.Show(
                 "Dialog",
                 NXOpen.NXMessageBox.DialogType.Error,
-                "Unable to Display Dialog. Error : " +
-                str(nXException.Message),
+                "Unable to Display Dialog. Error : " + str(nXException.Message),
             )
 
         return response
@@ -223,7 +220,7 @@ class Checks:
             cls.theUI.NXMessageBox.Show(
                 BF.get_text(Core.WorkPartCheckHeader),
                 NXOpen.NXMessageBox.DialogType.Error,
-                BF.get_text(Core.VersionCheck)
+                BF.get_text(Core.VersionCheck),
             )
             return False
         return True

@@ -1,13 +1,14 @@
 import json
 import math
+from locale.language_package import ReportCSETimeLocale as Text
 from pathlib import Path
 
 import NXOpen
 import NXOpen.CAM
 import NXOpen.UF
+
+from utils import UI, Checks, lw
 from utils.basic import BasicFunctions as BF
-from locale.language_package import ReportCSETimeLocale as Text
-from utils import Checks, UI, lw
 
 
 class ReportCSETime:
@@ -24,7 +25,7 @@ class ReportCSETime:
                 NXOpen.NXMessageBox.DialogType.Information,
                 str("The Debug Mode is switched one!"),
             )
-            
+
         self.checkWork = True
         self.checkSetup = True
 
@@ -56,8 +57,7 @@ class ReportCSETime:
             self.parsing_opration(objects_at_start)
         else:
             for i in range(num):
-                objects1[i] = self.theUI.SelectionManager.GetSelectedTaggedObject(
-                    i)
+                objects1[i] = self.theUI.SelectionManager.GetSelectedTaggedObject(i)
                 # self.operationTimes.append(self.get_cse_time(objects1[i]))
             self.parsing_opration(objects1)
 
@@ -94,8 +94,7 @@ class ReportCSETime:
                 lw(type(object))
             if not object.Name == "NONE":
                 if self.workPart.CAMSetup.IsGroup(object):
-                    self.parsing_opration(
-                        NXOpen.CAM.NCGroup.GetMembers(object))
+                    self.parsing_opration(NXOpen.CAM.NCGroup.GetMembers(object))
                 elif self.workPart.CAMSetup.IsOperation(object):
                     self.operationTimes.append(self.get_cse_time(object))
         return
@@ -137,8 +136,7 @@ class ReportCSETime:
     def convertTime(self, time_to_convert):
         try:
             hours = math.floor(time_to_convert / 60.0)
-            minutes = math.floor(
-                (time_to_convert / 60.0 - math.floor(hours)) * 60.0)
+            minutes = math.floor((time_to_convert / 60.0 - math.floor(hours)) * 60.0)
             seconds = math.floor(
                 (
                     (time_to_convert / 60.0 - math.floor(hours)) * 60.0
@@ -165,6 +163,8 @@ if __name__ == "__main__":
     with open(f"{config_file}/config.json", "r") as f:
         config = json.load(f)
         versions = config["report_cse_time"]
-    if Checks.check_nx_version(int(versions["version_max"]), int(versions["version_min"])):
+    if Checks.check_nx_version(
+        int(versions["version_max"]), int(versions["version_min"])
+    ):
         instance = ReportCSETime(isDebug)
         instance.report_time()
