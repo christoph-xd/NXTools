@@ -15,7 +15,7 @@ from utils import BasicFunctions as BF
 from utils import Checks
 
 theSession = NXOpen.Session.GetSession()
-isDebug = True
+isDebug = False
 
 
 def main():

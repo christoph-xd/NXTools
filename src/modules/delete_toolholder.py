@@ -53,7 +53,8 @@ class DeleteHolder:
                 f.close()
         from pathlib import Path
 
-        os.startfile(Path(self.holder_dat).parent)
+        if self.isDebug:
+            os.startfile(Path(self.holder_dat).parent)
 
     def open_ui(self):
         thedel_toolholder_ui = None
@@ -75,20 +76,9 @@ class DeleteHolder:
 
     def main(self):
         self.open_ui()
-
         pass
 
 
 if __name__ == "__main__":
     instance = DeleteHolder()
     instance.main()
-
-# string = "DATA |  HLD001_00001  | 1 | 1 | 0 | 3 | 0.00000 | 0.00000 | 0.00000 |  Small collet"
-
-# result = re.search(r"\| ([^|]+) \| \d+ \|", string)
-
-# if result:
-#     extracted_text = result.group(1).strip()
-#     print(extracted_text)
-# else:
-#     print("Match not found.")
