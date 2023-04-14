@@ -15,7 +15,7 @@ from utils import BasicFunctions as BF
 from utils import Checks
 
 theSession = NXOpen.Session.GetSession()
-isDebug = False
+isDebug = True
 
 
 def main():
@@ -55,7 +55,7 @@ def renumber_tool():
 
 
 def del_toolholder_dat():
-    instance = DeleteHolder()
+    instance = DeleteHolder(isDebug)
     instance.main()
 
 
@@ -125,4 +125,4 @@ def report_cse_time():
 
 
 if __name__ == "__main__":
-    main()
+    del_toolholder_dat()

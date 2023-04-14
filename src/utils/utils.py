@@ -9,6 +9,11 @@ import NXOpen.UF
 from utils.basic import BasicFunctions as BF
 
 
+def log(output: str) -> None:
+    theSession = NXOpen.Session.GetSession()
+    theSession.LogFile.WriteLine(output)
+
+
 def lw(output: str):
     """
     Write a line in the NX Listing Window
@@ -68,7 +73,8 @@ class Getters:
             dict: _description_
         """
         g1_len = round(object.GetToolpathCuttingLength())
-        g0_len = round(object.GetToolpathLength() - object.GetToolpathCuttingLength())
+        g0_len = round(object.GetToolpathLength() -
+                       object.GetToolpathCuttingLength())
         g1_time = round(object.GetToolpathCuttingTime() * 60)
         g0_time = round(
             (object.GetToolpathTime() - object.GetToolpathCuttingTime()) * 60
@@ -137,7 +143,8 @@ class UI:
             cls.theUI.NXMessageBox.Show(
                 "Dialog",
                 NXOpen.NXMessageBox.DialogType.Error,
-                "Unable to Display Dialog. Error : " + str(nXException.Message),
+                "Unable to Display Dialog. Error : " +
+                str(nXException.Message),
             )
 
         return response
