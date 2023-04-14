@@ -20,7 +20,7 @@ class DeleteHolder:
         self.holder_dat_bck = os.path.join(self.envVar, "holder_database.bck")
         self.regex = r"^\s*DATA\s* \| ([^|]+) \| \d+ \|"
 
-    def get_holder_names(self) -> list:
+    def load_data(self) -> list:
         if self.isDebug:
             log(" ")
             log(self.holder_dat)
@@ -37,27 +37,30 @@ class DeleteHolder:
         return holder
 
     def delete_holder(self, holder_name):
-
         if os.path.exists(self.holder_dat_bck):
             os.remove(self.holder_dat_bck)
 
         shutil.copyfile(self.holder_dat, self.holder_dat_bck)
-        with open(self.holder_dat, "w") as f:
-            for line in f:
-                result = re.search(self.regex, line)
-                if result:
-                    extracted_text = result.group(1).strip()
-                    if extracted_text == holder_name:
-                        continue
-                f.write(line)
+        with open(self.holder_dat_bck, "r") as r:
+            with open(self.holder_dat, "w") as f:
+                for line in r:
+                    result = re.search(self.regex, line)
+                    if result:
+                        extracted_text = result.group(1).strip()
+                        if extracted_text == holder_name:
+                            continue
+                    f.write(line)
+                f.close()
         from pathlib import Path
+
         os.startfile(Path(self.holder_dat).parent)
 
     def open_ui(self):
         thedel_toolholder_ui = None
         try:
             thedel_toolholder_ui = DelToolHolderUI.del_toolholder_ui(
-                self.get_holder_names(), self.delete_holder)
+                self.load_data, self.delete_holder
+            )
             #  The following method shows the dialog immediately
             thedel_toolholder_ui.Launch()
         except Exception as ex:

@@ -52,7 +52,7 @@ class del_toolholder_ui:
     # ------------------------------------------------------------------------------
     # Constructor for NX Styler class
     # ------------------------------------------------------------------------------
-    def __init__(self, holder: list, callbackDelHolder):
+    def __init__(self, callBackGetData, callbackDelHolder):
         try:
             self.theSession = NXOpen.Session.GetSession()
             self.theUI = NXOpen.UI.GetUI()
@@ -67,7 +67,7 @@ class del_toolholder_ui:
             self.theDialog.AddInitializeHandler(self.initialize_cb)
             self.theDialog.AddDialogShownHandler(self.dialogShown_cb)
 
-            self.holder_list = holder
+            self.callbackGetData = callBackGetData
             self.calbackDelete = callbackDelHolder
         except Exception as ex:
             # ---- Enter your exception handling code here -----
@@ -169,7 +169,8 @@ class del_toolholder_ui:
         try:
             # ---- Enter your callback code here -----
             lw(self.list_box0.GetSelectedItemStrings())
-            self.calbackDelete(self.list_box0.GetSelectedItemStrings[0])
+            self.calbackDelete(self.list_box0.GetSelectedItemStrings()[0])
+            self.ReloadCallback(self.list_box0)
             pass
         except Exception as ex:
             # ---- Enter your exception handling code here -----
@@ -234,8 +235,13 @@ class del_toolholder_ui:
     # ListBox specific callbacks
     # ------------------------------------------------------------------------------
     def AddCallback(self, list):
-        list.SetListItems(self.holder_list)
+        holder_list = self.callbackGetData()
+        list.SetListItems(holder_list)
         pass
+
+    def ReloadCallback(self, list):
+        list.SetListItems([])
+        self.AddCallback(list)
 
     #
 
