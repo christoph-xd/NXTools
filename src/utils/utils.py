@@ -73,8 +73,7 @@ class Getters:
             dict: _description_
         """
         g1_len = round(object.GetToolpathCuttingLength())
-        g0_len = round(object.GetToolpathLength() -
-                       object.GetToolpathCuttingLength())
+        g0_len = round(object.GetToolpathLength() - object.GetToolpathCuttingLength())
         g1_time = round(object.GetToolpathCuttingTime() * 60)
         g0_time = round(
             (object.GetToolpathTime() - object.GetToolpathCuttingTime()) * 60
@@ -143,8 +142,7 @@ class UI:
             cls.theUI.NXMessageBox.Show(
                 "Dialog",
                 NXOpen.NXMessageBox.DialogType.Error,
-                "Unable to Display Dialog. Error : " +
-                str(nXException.Message),
+                "Unable to Display Dialog. Error : " + str(nXException.Message),
             )
 
         return response

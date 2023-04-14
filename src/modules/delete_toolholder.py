@@ -1,10 +1,12 @@
-import re
 import os
+import re
 import shutil
-from utils import lw, log
+
 import NXOpen
 import NXOpen.UF
+
 from ui import DelToolHolderUI
+from utils import log, lw
 
 
 class DeleteHolder:

@@ -6,40 +6,16 @@ import NXOpen
 from modules.axis_toolpath import CreateAxis
 from modules.create_toolpath_geo import CreateGeometry
 from modules.del_all_ude import DelAllUde
+from modules.delete_toolholder import DeleteHolder
 from modules.renumber_tools import RenumberTool
 from modules.report_cse_time import ReportCSETime
 from modules.report_cutting_lenght import ReportCuttingLength
-from modules.delete_toolholder import DeleteHolder
 from ui import MainUi
 from utils import BasicFunctions as BF
 from utils import Checks
 
 theSession = NXOpen.Session.GetSession()
 isDebug = False
-
-
-def main():
-    themain_ui = None
-    try:
-        themain_ui = MainUi.main_ui(
-            renumber_tool,
-            tp_geo,
-            del_ude,
-            tool_vector_point,
-            report_length,
-            report_cse_time,
-        )
-        #  The following method shows the dialog immediately
-        themain_ui.Launch()
-    except Exception as ex:
-        # ---- Enter your exception handling code here -----
-        NXOpen.UI.GetUI().NXMessageBox.Show(
-            "Block Styler", NXOpen.NXMessageBox.DialogType.Error, str(ex)
-        )
-    finally:
-        if themain_ui != None:
-            themain_ui.Dispose()
-            themain_ui = None
 
 
 def renumber_tool():
@@ -124,5 +100,30 @@ def report_cse_time():
             instance.report_time()
 
 
+def main():
+    themain_ui = None
+    try:
+        themain_ui = MainUi.main_ui(
+            renumber_tool,
+            tp_geo,
+            del_ude,
+            tool_vector_point,
+            report_length,
+            report_cse_time,
+            del_toolholder_dat,
+        )
+        #  The following method shows the dialog immediately
+        themain_ui.Launch()
+    except Exception as ex:
+        # ---- Enter your exception handling code here -----
+        NXOpen.UI.GetUI().NXMessageBox.Show(
+            "Block Styler", NXOpen.NXMessageBox.DialogType.Error, str(ex)
+        )
+    finally:
+        if themain_ui != None:
+            themain_ui.Dispose()
+            themain_ui = None
+
+
 if __name__ == "__main__":
-    del_toolholder_dat()
+    main()

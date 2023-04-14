@@ -31,13 +31,15 @@
 #       been provided for you.
 # ==============================================================================
 
+import os
+from pathlib import Path
+
 # ------------------------------------------------------------------------------
 # These imports are needed for the following template code
 # ------------------------------------------------------------------------------
 import NXOpen
 import NXOpen.BlockStyler
-from pathlib import Path
-import os
+
 from utils import lw
 
 

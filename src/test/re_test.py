@@ -1,6 +1,5 @@
 import re
 
-
 string = "DATA |     HLD001_00001  | 1 | 1 | 0 | 3 | 0.00000 | 0.00000 | 0.00000 |  Small collet"
 
 result = re.search(r"^\s*DATA\s* \| ([^|]+) \| \d+ \|", string)
