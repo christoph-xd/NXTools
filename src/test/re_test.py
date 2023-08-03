@@ -9,3 +9,7 @@ if result:
     print(extracted_text)
 else:
     print("Match not found.")
+
+
+def open_file():
+    """Open an file and read the content of the file and compare it with user input"""
