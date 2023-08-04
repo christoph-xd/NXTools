@@ -1,15 +1,23 @@
-import re
-
-string = "DATA |     HLD001_00001  | 1 | 1 | 0 | 3 | 0.00000 | 0.00000 | 0.00000 |  Small collet"
-
-result = re.search(r"^\s*DATA\s* \| ([^|]+) \| \d+ \|", string)
-
-if result:
-    extracted_text = result.group(1).strip()
-    print(extracted_text)
-else:
-    print("Match not found.")
+import NXOpen
+import NXOpen.UF
 
 
-def open_file():
-    """Open an file and read the content of the file and compare it with user input"""
+def lw(output: str):
+    """
+    Write a line in the NX Listing Window
+    Args:
+        output   : The Output which will shown in the NX Listing Window
+    """
+    theSession = NXOpen.Session.GetSession()
+    if not theSession.ListingWindow.IsOpen:
+        theSession.ListingWindow.Open()
+    else:
+        pass
+    theSession.ListingWindow.WriteFullline(str(output))
+    theSession.ListingWindow.Close()
+
+
+theSession = NXOpen.Session.GetSession()
+theUfSession = NXOpen.UF.UFSession.GetUFSession()
+
+lw(dir(theUfSession.Mom.AskMom(456)))

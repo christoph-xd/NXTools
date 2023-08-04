@@ -7,7 +7,7 @@ from modules.axis_toolpath import CreateAxis
 from modules.create_toolpath_geo import CreateGeometry
 from modules.del_all_ude import DelAllUde
 from modules.delete_toolholder import DeleteHolder
-from modules.renumber_tools import RenumberTool
+from renumber_tools import RenumberTool
 from modules.report_cse_time import ReportCSETime
 from modules.report_cutting_lenght import ReportCuttingLength
 from ui import MainUi

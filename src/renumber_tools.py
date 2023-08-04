@@ -44,12 +44,5 @@ class RenumberTool:
 
 
 if __name__ == "__main__":
-    config_file = Path(__file__).parent
-    with open(f"{config_file}/config.json", "r") as f:
-        config = json.load(f)
-        versions = config["renumber_tools"]
-    if Checks.check_nx_version(
-        int(versions["version_max"]), int(versions["version_min"])
-    ):
-        instance = RenumberTool()
-        instance.main()
+    instance = RenumberTool()
+    instance.main()

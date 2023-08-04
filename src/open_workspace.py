@@ -31,13 +31,5 @@ class OpenWorkSpace:
 
 if __name__ == "__main__":
     isDebug = False
-    config_file = Path(__file__).parent
-
-    with open(f"{config_file}/config.json", "r") as f:
-        config = json.load(f)
-        versions = config["open_workspace"]
-    if Checks.check_nx_version(
-        int(versions["version_max"]), int(versions["version_min"])
-    ):
-        instance = OpenWorkSpace(isDebug)
-        instance.open()
+    instance = OpenWorkSpace(isDebug)
+    instance.open()

@@ -3,9 +3,13 @@ import re
 import shutil
 from datetime import datetime
 from pathlib import Path
+from typing import Final
 
 import NXOpen
 import NXOpen.UF
+
+
+VERSION: Final = 0.1
 
 
 def log(output: str) -> None:
